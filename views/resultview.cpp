@@ -32,11 +32,6 @@ ResultView::ResultView(QWidget *parent) :
     m_fio->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
     m_group->setWordWrap(true);
 
-//    m_header->setFixedSize(width(), labelHeight);
-//    m_fio->setFixedSize(width(), labelHeight);
-//    m_group->setFixedSize(width(), labelHeight);
-//    m_sore->setFixedSize(width(), labelHeight);
-
     m_header->setText("Ваш результат:");
 
     m_vbox->setSizeConstraint(QLayout::SetMinimumSize);
