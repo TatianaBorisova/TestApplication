@@ -34,10 +34,12 @@ private:
     void clearRadioBtnList();
     void hideEntry();
     void showEntry();
+    void setImg(const QString &imgPath);
 
 private:
     QLabel              *m_header;
     QLabel              *m_questionEntry;
+    QLabel              *m_questionImg;
     QVBoxLayout         *m_mainBox;
     QPushButton         *nextBtn;
     QStringList          m_answersList;

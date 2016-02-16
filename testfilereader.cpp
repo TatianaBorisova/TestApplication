@@ -43,9 +43,10 @@ void TestFileReader::readTestFile(const QString &fileName)
             QJsonObject obj = value.toObject();
             TestStructure testLines;
 
-            testLines.question = StringEncryption::stringDecrypt(obj["TestQuestion"].toString(), "test");
-            testLines.trueAnswer = StringEncryption::stringDecrypt(obj["CorrectTestAnswer"].toString(), "test");
+            testLines.question    = StringEncryption::stringDecrypt(obj["TestQuestion"].toString(), "test");
+            testLines.trueAnswer  = StringEncryption::stringDecrypt(obj["CorrectTestAnswer"].toString(), "test");
             testLines.falseAnswer = StringEncryption::stringDecrypt(obj["TestAnswers"].toString(), "test");
+            testLines.imgPath     = StringEncryption::stringDecrypt(obj["ImgPath"].toString(), "test");
 
             testData << testLines;
         }

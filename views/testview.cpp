@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QMessageBox>
+#include <QDebug>
 
 namespace {
 const int fieldHeight = 50;
@@ -18,12 +19,14 @@ TestView::TestView(QWidget *parent) :
     QWidget(parent),
     m_header(new QLabel(this)),
     m_questionEntry(new QLabel(this)),
+    m_questionImg(new QLabel(this)),
     m_mainBox(new QVBoxLayout(this)),
     nextBtn(new QPushButton(this)),
     radioBtnList(new QGridLayout(this)),
     m_anssureView(new AssureView(this))
 {
     m_anssureView->setVisible(false);
+    m_questionImg->setVisible(false);
 
     setFixedSize(middleWidth, middleHeight);
 
@@ -38,6 +41,7 @@ TestView::TestView(QWidget *parent) :
 
     m_header->setFixedSize(width(), fieldHeight/2);
     m_questionEntry->setFixedSize(width() - 2*margin, height()*0.3);
+    m_questionImg->setFixedSize(width() - 2*margin, height()*0.3);
     nextBtn->setFixedSize(100, fieldHeight);
 
     QFont font("Times", 16);
@@ -54,6 +58,7 @@ TestView::TestView(QWidget *parent) :
 
     m_mainBox->addWidget(m_header);
     m_mainBox->addWidget(m_questionEntry);
+    m_mainBox->addWidget(m_questionImg);
     m_mainBox->addLayout(radioBtnList);
     m_mainBox->addWidget(nextBtn);
 
@@ -69,19 +74,24 @@ void TestView::setTestData(const TestStructure &question)
     m_answer.assurance = -1;
     m_answer.statement.clear();
 
-    QStringList answers;
-
+    //set question text
     m_questionEntry->setText(question.question);
     m_answer.statement = question.question;
 
+    //set answers
+    QStringList answers;
     QStringList wrangAnswers = question.falseAnswer.split(";");
-
     m_trueAnswer = question.trueAnswer;
     answers << question.trueAnswer;
-
     for (int i = 0; i < wrangAnswers.count(); i++) {
         answers << wrangAnswers.at(i);
     }
+
+    //set picture of question
+    if (!question.imgPath.isEmpty())
+        setImg(question.imgPath);
+    else
+        m_questionImg->hide();
 
     while (answers.count() > 0) {
         if (answers.count() > 1) {
@@ -119,6 +129,7 @@ void TestView::setAnsweredState()
 void TestView::hideEntry()
 {
     m_questionEntry->hide();
+    m_questionImg->hide();
     m_header->hide();
     nextBtn->hide();
     for (int i = 0; i < m_createdBtn.count(); i++) {
@@ -133,6 +144,20 @@ void TestView::showEntry()
     nextBtn->show();
     for (int i = 0; i < m_createdBtn.count(); i++) {
         m_createdBtn.at(i)->show();
+    }
+}
+
+void TestView::setImg(const QString &imgPath)
+{
+    QString imgValue = imgPath;
+    if (!imgValue.isEmpty()) {
+        QRegExp regExp(" ");
+        imgValue = imgValue.replace(regExp, "");
+        QPixmap *pixmap = new QPixmap(imgValue);
+
+        m_questionImg->setAlignment(Qt::AlignHCenter);
+        m_questionImg->setPixmap(pixmap->scaled(m_questionImg->height(), m_questionImg->height()));
+        m_questionImg->setVisible(true);
     }
 }
 
@@ -155,7 +180,11 @@ void TestView::noVariant()
 }
 
 void TestView::clearRadioBtnList()
-{
+{        
+    //TBD check it later
+    //    if (m_questionImg->pixmap())
+    //        delete m_questionImg->pixmap();
+
     for (int i = 0; i < m_createdBtn.count(); i++) {
         QRadioButton *btn = m_createdBtn.at(i);
         if (btn) {

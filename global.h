@@ -15,6 +15,7 @@ typedef struct  test{
     QString question;
     QString trueAnswer;
     QString falseAnswer;
+    QString imgPath;
 } TestStructure ;
 
 typedef struct answers {
