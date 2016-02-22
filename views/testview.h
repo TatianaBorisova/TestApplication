@@ -2,8 +2,7 @@
 #define TESTVIEW_H
 
 #include "global.h"
-
-#include <QWidget>
+#include "testbaseview.h"
 
 class QLabel;
 class QPushButton;
@@ -13,7 +12,7 @@ class QVBoxLayout;
 class QStringList;
 class AssureView;
 
-class TestView : public QWidget
+class TestView : public TestBaseView
 {
     Q_OBJECT
 public:
@@ -29,6 +28,9 @@ private slots:
     void yesVariant();
     void noVariant();
 
+protected:
+    virtual void resize();
+
 private:
     void createRadioBtnList(const QStringList &list);
     void clearRadioBtnList();
@@ -41,11 +43,11 @@ private:
     QLabel              *m_questionEntry;
     QLabel              *m_questionImg;
     QVBoxLayout         *m_mainBox;
-    QPushButton         *nextBtn;
+    QPushButton         *m_nextBtn;
     QStringList          m_answersList;
     QString              m_trueAnswer;
     QList<QRadioButton*> m_createdBtn;
-    QGridLayout         *radioBtnList;
+    QGridLayout         *m_radioBtnList;
     AssureView          *m_anssureView;
     AnswersVector        m_answer;
 };

@@ -33,5 +33,13 @@ typedef struct student {
     QList<AnswersVector> answerInfo;
 } StudentResult;
 
+enum TestAppView{
+    TestStartView = 0,
+    TestWayView,
+    TestStudentInfoView,
+    TestEntryView,
+    TestResultView
+};
+
 #endif // GLOBAL
 

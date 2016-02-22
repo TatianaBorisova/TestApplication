@@ -12,7 +12,7 @@ const int fieldHeight = 50;
 }
 
 StudentInfoView::StudentInfoView(QWidget *parent) :
-    QWidget(parent),
+    TestBaseView(parent),
     m_centerBox(new QGridLayout(this)),
     m_nameLabel(new QLabel(this)),
     m_secondNameLabel(new QLabel(this)),
@@ -27,16 +27,6 @@ StudentInfoView::StudentInfoView(QWidget *parent) :
 {
     connect(m_nextButton, &QPushButton::clicked, this, &StudentInfoView::nextButtonPressed);
 
-    setFixedSize(middleWidth, middleHeight);
-
-    m_centerBox->setContentsMargins(10*margin, margin, 45*margin, margin);
-    m_centerBox->setGeometry(QRect(0, 0, width(), height()));
-
-    m_nameLabel->setFixedSize((width()*0.2) - 2*margin, fieldHeight);
-    m_secondNameLabel->setFixedSize((width()*0.2) - 2*margin, fieldHeight);
-    m_surnameLabel->setFixedSize((width()*0.2) - 2*margin, fieldHeight);
-    m_groupLabel->setFixedSize((width()*0.2) - 2*margin, fieldHeight);
-
     QFont font("Times", 16);
 
     m_nameLabel->setText("Имя:");
@@ -49,18 +39,10 @@ StudentInfoView::StudentInfoView(QWidget *parent) :
     m_surnameLabel->setFont(font);
     m_groupLabel->setFont(font);
 
-    m_nameField->setFixedSize((width()/2) - 2*margin, fieldHeight);
-    m_secondField->setFixedSize((width()/2) - 2*margin, fieldHeight);
-    m_surnameField->setFixedSize((width()/2) - 2*margin, fieldHeight);
-    m_groupField->setFixedSize((width()/2) - 2*margin, fieldHeight);
-
     m_nameField->setFont(font);
     m_secondField->setFont(font);
     m_surnameField->setFont(font);
     m_groupField->setFont(font);
-
-    m_info->setFixedSize(width() - 2*margin, 2*fieldHeight);
-    m_nextButton->setFixedSize(100, fieldHeight);
 
     m_info->setText("Пожалуйста, заполните данные для тестирования.");
     m_info->setFont(font);
@@ -80,7 +62,30 @@ StudentInfoView::StudentInfoView(QWidget *parent) :
     m_centerBox->addWidget(m_surnameField, 2, 1);
     m_centerBox->addWidget(m_groupField, 3, 1);
 
-    this->setLayout(m_centerBox);
+    setLayout(m_centerBox);
+}
+
+void StudentInfoView::resize()
+{
+    QWidget *wParent = dynamic_cast<QWidget *>(parent());
+    if (wParent)
+        setFixedSize(wParent->width(), wParent->height());
+
+    m_centerBox->setContentsMargins(10*margin, margin, 45*margin, margin);
+    m_centerBox->setGeometry(QRect(0, 0, width(), height()));
+
+    m_nameLabel->setFixedSize((width()*0.2) - 2*margin, fieldHeight);
+    m_secondNameLabel->setFixedSize((width()*0.2) - 2*margin, fieldHeight);
+    m_surnameLabel->setFixedSize((width()*0.2) - 2*margin, fieldHeight);
+    m_groupLabel->setFixedSize((width()*0.2) - 2*margin, fieldHeight);
+
+    m_nameField->setFixedSize((width()/2) - 2*margin, fieldHeight);
+    m_secondField->setFixedSize((width()/2) - 2*margin, fieldHeight);
+    m_surnameField->setFixedSize((width()/2) - 2*margin, fieldHeight);
+    m_groupField->setFixedSize((width()/2) - 2*margin, fieldHeight);
+
+    m_info->setFixedSize(width() - 2*margin, 2*fieldHeight);
+    m_nextButton->setFixedSize(100, fieldHeight);
 }
 
 void StudentInfoView::nextButtonPressed()

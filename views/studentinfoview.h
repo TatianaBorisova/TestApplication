@@ -2,15 +2,14 @@
 #define STUDENTINFOVIEW_H
 
 #include "global.h"
-
-#include <QWidget>
+#include "testbaseview.h"
 
 class QGridLayout;
 class QLabel;
 class QLineEdit;
 class QPushButton;
 
-class StudentInfoView : public QWidget
+class StudentInfoView : public TestBaseView
 {
     Q_OBJECT
 public:
@@ -21,6 +20,9 @@ public slots:
 
 signals:
     void nextStep(const StudentResult &info);
+
+protected:
+    virtual void resize();
 
 private:
     QGridLayout *m_centerBox;

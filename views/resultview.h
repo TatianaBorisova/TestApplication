@@ -2,12 +2,11 @@
 #define RESULTVIEW_H
 
 #include "global.h"
-
-#include <QWidget>
+#include "testbaseview.h"
 
 class QLabel;
 class QVBoxLayout;
-class ResultView : public QWidget
+class ResultView : public TestBaseView
 {
     Q_OBJECT
 public:
@@ -15,6 +14,9 @@ public:
 
 public slots:
     void finishTestResult(const StudentResult &result);
+
+protected:
+    virtual void resize();
 
 private:
     QVBoxLayout *m_vbox;

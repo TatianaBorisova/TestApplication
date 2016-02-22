@@ -2,36 +2,53 @@
 #include "global.h"
 
 #include <QPushButton>
-#include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QRect>
 #include <QApplication>
 
-StartView::StartView(QWidget *parent)
-    : QWidget(parent),
-      m_vbox(new QVBoxLayout(this)),
-      m_openTest(new QPushButton("Выбрать тест", this)),
-      m_exit(new QPushButton("Выход", this))
-{   
-    connect(m_exit, &QPushButton::clicked, this, &QApplication::quit);
-    connect(m_openTest, &QPushButton::clicked, this, &StartView::openTestChoice);
+namespace {
+const int btnSize = 200;
+}
 
-    setFixedSize(smallWidth - 100, smallHeight);
+StartView::StartView(QWidget *parent)
+    : TestBaseView(parent),
+      m_hbox(new QHBoxLayout(this)),
+      m_test(new QPushButton(this)),
+      m_settings(new QPushButton(this))
+{   
+    connect(m_settings, &QPushButton::clicked, this, &QApplication::quit);
+    connect(m_test, &QPushButton::clicked, this, &StartView::openTestView);
 
     QFont font("Times", 14);
+    m_test->setFont(font);
+    m_settings->setFont(font);
 
-    m_openTest->setFont(font);
-    m_exit->setFont(font);
+    m_test->setIcon(QIcon(QPixmap(":res/test.png")));
+    m_settings->setIcon(QIcon(QPixmap(":res/settings.png")));
 
-    m_vbox->setGeometry(QRect(0, 0, this->width(), this->height()));
+    m_test->setIconSize(QSize(btnSize, btnSize));
+    m_settings->setIconSize(QSize(btnSize, btnSize));
+    m_hbox->setMargin(5);
 
-    m_openTest->setFixedSize(this->width() - m_vbox->margin(), 50);
-    m_exit->setFixedSize(this->width() - m_vbox->margin(), 50);
+    m_hbox->addWidget(m_test);
+    m_hbox->addWidget(m_settings);
 
-    m_vbox->setMargin(5);
-    m_vbox->addWidget(m_openTest);
-    m_vbox->addWidget(m_exit);
+    setLayout(m_hbox);
+}
 
-    this->setLayout(m_vbox);
+void StartView::resize()
+{
+    QWidget *wParent = dynamic_cast<QWidget *>(parent());
+    if (wParent)
+        setFixedSize(wParent->width(), wParent->height());
+
+    m_hbox->setAlignment(m_test, Qt::AlignHCenter);
+    m_hbox->setAlignment(m_settings, Qt::AlignHCenter);
+}
+
+void StartView::openTestView()
+{
+    emit showView(TestWayView);
 }
 
 StartView::~StartView()

@@ -6,7 +6,7 @@
 #include "global.h"
 
 class StartView;
-class ChooseTestView;
+class SettingsView;
 class TestFileReader;
 class StudentInfoView;
 class TestView;
@@ -21,13 +21,10 @@ public:
     MainWindow(QWidget *parent = 0);
 
 public slots:
-    void showTestChoice();
-    void showStartScreen();
-    void showStudentScreen();
-    void showTestScreen();
-    void showResultScreen();
+    void showTestView(TestAppView view);
 
 signals:
+    void showView(TestAppView view);
     void startTestView();
     void finishTestResult(const StudentResult &result);
 
@@ -37,13 +34,15 @@ private slots:
     void addAnswerToStudentInfoVector(const AnswersVector &answer);
 
 private:
+    void setMainWindowSize(TestAppView view);
+    bool setTestData();
     QRect getScreenGeometry() const;
     void hidePreviuosWindows();
     void calculateRresult();
 
 private:
     StartView           *m_startWnd;
-    ChooseTestView      *m_chooseTest;
+    SettingsView      *m_chooseTest;
     StudentInfoView     *m_studentData;
     TestFileReader      *m_fileReader;
     QList<TestStructure> m_testList;

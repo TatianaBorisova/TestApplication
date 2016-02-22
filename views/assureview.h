@@ -1,13 +1,13 @@
 #ifndef ASSUREVIEW_H
 #define ASSUREVIEW_H
 
-#include <QWidget>
+#include "testbaseview.h"
 
 class QPushButton;
 class QHBoxLayout;
 class QLabel;
 
-class AssureView : public QWidget
+class AssureView : public TestBaseView
 {
     Q_OBJECT
 public:
@@ -16,6 +16,9 @@ public:
 signals:
     void yesButton();
     void noButton();
+
+protected:
+    virtual void resize();
 
 private:
     QLabel      *m_assure;

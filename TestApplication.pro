@@ -20,10 +20,13 @@ SOURCES += main.cpp \
     views/assureview.cpp \
     views/resultview.cpp \
     views/testview.cpp \
-    views/choosetestview.cpp \
     views/startview.cpp \
     views/studentinfoview.cpp \
-    tcpclient.cpp
+    tcpclient.cpp \
+    views/testbaseview.cpp \
+    views/settingsview.cpp \
+    views/testtabview.cpp \
+    views/clienttabview.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -34,7 +37,13 @@ HEADERS  += \
     views/assureview.h \
     views/resultview.h \
     views/testview.h \
-    views/choosetestview.h \
     views/startview.h \
     views/studentinfoview.h \
-    tcpclient.h
+    tcpclient.h \
+    views/testbaseview.h \
+    views/settingsview.h \
+    views/testtabview.h \
+    views/clienttabview.h
+
+RESOURCES += \
+    resources.qrc

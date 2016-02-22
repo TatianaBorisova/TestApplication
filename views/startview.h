@@ -1,11 +1,12 @@
 #ifndef STARTSVIEW_H
 #define STARTSVIEW_H
 
-#include <QWidget>
-class QPushButton;
-class QVBoxLayout;
+#include "testbaseview.h"
 
-class StartView : public QWidget
+class QPushButton;
+class QHBoxLayout;
+
+class StartView : public TestBaseView
 {
     Q_OBJECT
 
@@ -13,13 +14,16 @@ public:
     StartView(QWidget *parent = 0);
     ~StartView();
 
-signals:
-    void openTestChoice();
+private slots:
+    void openTestView();
+
+protected:
+    virtual void resize();
 
 private:
-    QVBoxLayout *m_vbox;
-    QPushButton *m_openTest;
-    QPushButton *m_exit;
+    QHBoxLayout *m_hbox;
+    QPushButton *m_test;
+    QPushButton *m_settings;
 };
 
 #endif // STARTSVIEW_H

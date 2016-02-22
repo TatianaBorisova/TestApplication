@@ -16,53 +16,55 @@ const int margin = 15;
 }
 
 TestView::TestView(QWidget *parent) :
-    QWidget(parent),
+    TestBaseView(parent),
     m_header(new QLabel(this)),
     m_questionEntry(new QLabel(this)),
     m_questionImg(new QLabel(this)),
     m_mainBox(new QVBoxLayout(this)),
-    nextBtn(new QPushButton(this)),
-    radioBtnList(new QGridLayout(this)),
+    m_nextBtn(new QPushButton(this)),
+    m_radioBtnList(new QGridLayout(this)),
     m_anssureView(new AssureView(this))
 {
     m_anssureView->setVisible(false);
     m_questionImg->setVisible(false);
 
-    setFixedSize(middleWidth, middleHeight);
-
-    connect(nextBtn, &QPushButton::clicked, this, &TestView::setAnsweredState);
+    connect(m_nextBtn, &QPushButton::clicked, this, &TestView::setAnsweredState);
     connect(m_anssureView, &AssureView::yesButton, this, &TestView::yesVariant);
     connect(m_anssureView, &AssureView::noButton, this, &TestView::noVariant);
-
-    m_mainBox->setMargin(margin);
-
-    m_mainBox->setGeometry(QRect(0, 0, width(), height()));
-    radioBtnList->setGeometry(QRect(0, height()/2, width(), height()/2));
-
-    m_header->setFixedSize(width(), fieldHeight/2);
-    m_questionEntry->setFixedSize(width() - 2*margin, height()*0.3);
-    m_questionImg->setFixedSize(width() - 2*margin, height()*0.3);
-    nextBtn->setFixedSize(100, fieldHeight);
 
     QFont font("Times", 16);
 
     m_header->setText("Утверждение:");
-    nextBtn->setText("Ответить");
+    m_nextBtn->setText("Ответить");
 
     m_header->setAlignment(Qt::AlignHCenter);
     m_questionEntry->setAlignment(Qt::AlignHCenter);
 
     m_header->setFont(font);
     m_questionEntry->setFont(font);
-    nextBtn->setFont(font);
+    m_nextBtn->setFont(font);
 
     m_mainBox->addWidget(m_header);
     m_mainBox->addWidget(m_questionEntry);
     m_mainBox->addWidget(m_questionImg);
-    m_mainBox->addLayout(radioBtnList);
-    m_mainBox->addWidget(nextBtn);
+    m_mainBox->addLayout(m_radioBtnList);
+    m_mainBox->addWidget(m_nextBtn);
 
-    this->setLayout(m_mainBox);
+    setLayout(m_mainBox);
+}
+
+void TestView::resize()
+{
+    QWidget *wParent = dynamic_cast<QWidget *>(parent());
+    if (wParent)
+        setFixedSize(wParent->width(), wParent->height());
+
+    m_mainBox->setMargin(margin);
+    m_header->setFixedSize(width(), fieldHeight/2);
+    m_questionEntry->setFixedSize(width() - 2*margin, height()*0.3);
+    m_questionImg->setFixedSize(height()*0.3, height()*0.3);
+    m_nextBtn->setFixedSize(100, fieldHeight);
+   // m_anssureView->resize();
 }
 
 void TestView::setTestData(const TestStructure &question)
@@ -121,7 +123,6 @@ void TestView::setAnsweredState()
         return;
     } else {
         hideEntry();
-        m_anssureView->move((this->width() - m_anssureView->width())/2, (this->height() - m_anssureView->height())/2);
         m_anssureView->show();
     }
 }
@@ -131,7 +132,7 @@ void TestView::hideEntry()
     m_questionEntry->hide();
     m_questionImg->hide();
     m_header->hide();
-    nextBtn->hide();
+    m_nextBtn->hide();
     for (int i = 0; i < m_createdBtn.count(); i++) {
         m_createdBtn.at(i)->hide();
     }
@@ -141,7 +142,7 @@ void TestView::showEntry()
 {
     m_questionEntry->show();
     m_header->show();
-    nextBtn->show();
+    m_nextBtn->show();
     for (int i = 0; i < m_createdBtn.count(); i++) {
         m_createdBtn.at(i)->show();
     }
@@ -217,10 +218,10 @@ void TestView::createRadioBtnList(const QStringList &list)
         btn->setFont(font);
 
         if (i % 2) {
-            radioBtnList->addWidget(btn, leftRow, leftColumn);
+            m_radioBtnList->addWidget(btn, leftRow, leftColumn);
             leftRow++;
         } else {
-            radioBtnList->addWidget(btn, rightRow, rightColumn);
+            m_radioBtnList->addWidget(btn, rightRow, rightColumn);
             rightColumn++;
         }
         m_createdBtn.append(btn);
