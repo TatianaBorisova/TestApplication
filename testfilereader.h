@@ -13,9 +13,16 @@ public:
 
 public slots:
     void readTestFile(const QString &fileName);
+    void readAllTestsFromDb(const QString &fileName);
+    void readTestFromDb(const QString &testName);
 
 signals:
     void readInfo(const QList<TestStructure> &testInfo);
+    void readTests(const QList<TestHeaderData> &test);
+    void sendFullTestData(const TestData &data);
+
+private:
+    QString m_Db;
 };
 
 #endif // TESTFILEREADER_H

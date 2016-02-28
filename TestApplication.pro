@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -26,7 +26,8 @@ SOURCES += main.cpp \
     views/testbaseview.cpp \
     views/settingsview.cpp \
     views/testtabview.cpp \
-    views/clienttabview.cpp
+    views/clienttabview.cpp \
+    views/custombutton.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -43,7 +44,8 @@ HEADERS  += \
     views/testbaseview.h \
     views/settingsview.h \
     views/testtabview.h \
-    views/clienttabview.h
+    views/clienttabview.h \
+    views/custombutton.h
 
 RESOURCES += \
     resources.qrc

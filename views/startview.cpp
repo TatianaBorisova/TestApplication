@@ -4,7 +4,7 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QRect>
-#include <QApplication>
+#include <QMessageBox>
 
 namespace {
 const int btnSize = 200;
@@ -16,12 +16,8 @@ StartView::StartView(QWidget *parent)
       m_test(new QPushButton(this)),
       m_settings(new QPushButton(this))
 {   
-    connect(m_settings, &QPushButton::clicked, this, &QApplication::quit);
+    connect(m_settings, &QPushButton::clicked, this, &StartView::openSettingsView);
     connect(m_test, &QPushButton::clicked, this, &StartView::openTestView);
-
-    QFont font("Times", 14);
-    m_test->setFont(font);
-    m_settings->setFont(font);
 
     m_test->setIcon(QIcon(QPixmap(":res/test.png")));
     m_settings->setIcon(QIcon(QPixmap(":res/settings.png")));
@@ -49,6 +45,11 @@ void StartView::resize()
 void StartView::openTestView()
 {
     emit showView(TestWayView);
+}
+
+void StartView::openSettingsView()
+{
+    QMessageBox::warning(0, "Error", "Я кнопка - задел на будущее. Пока работать отказываюсь.");
 }
 
 StartView::~StartView()

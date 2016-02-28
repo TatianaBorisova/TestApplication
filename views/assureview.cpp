@@ -5,7 +5,7 @@
 #include <QPushButton>
 
 namespace {
-const int margin = 10;
+const int minHeight = 10;
 const int btnWidth = 100;
 const int btnHeight = 50;
 }
@@ -23,17 +23,11 @@ AssureView::AssureView(QWidget *parent) :
     connect(m_yesBtn, &QPushButton::clicked, this, &AssureView::hide);
     connect(m_noBtn, &QPushButton::clicked, this, &AssureView::hide);
 
-    QFont font("Times", 14);
-
     m_assure->setText("Вы уверенны в своем ответе?");
-    m_assure->setFont(font);
     m_assure->setAlignment(Qt::AlignHCenter);
 
     m_yesBtn->setText("Да");
     m_noBtn->setText("Нет");
-
-    m_yesBtn->setFont(font);
-    m_noBtn->setFont(font);
 
     m_yesBtn->setFixedSize(btnWidth, btnHeight);
     m_noBtn->setFixedSize(btnWidth, btnHeight);

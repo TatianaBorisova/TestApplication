@@ -6,6 +6,7 @@
 class QPushButton;
 class QGridLayout;
 class QListWidget;
+class QVBoxLayout;
 
 class TestTabView : public TestBaseView
 {
@@ -15,12 +16,18 @@ public:
     void setFixedSize(int w, int h);
 
 signals:
+    void chosenTestDB(const QString &fileName);
     void chosenTestName(const QString &fileName);
     void addPath(const QString &filePath);
 
 public slots:
-    void chooseTest();
+    void chooseTestDb();
     void chooseFolder();
+    void chooseTest();
+    void fillTestVariants(const QList<TestHeaderData> &test);
+
+private slots:
+    void back();
 
 private:
     bool findDumlicateFile(QListWidget *itemBox, const QString &fileName);
@@ -32,10 +39,13 @@ protected:
 
 private:
     QGridLayout *m_box;
+    QVBoxLayout *m_vbox;
     QListWidget *m_testBox;
-    QPushButton *m_chooseTestFile;
+    QPushButton *m_chooseTestBD;
     QPushButton *m_downloadTest;
     QPushButton *m_chooseFolder;
+    QPushButton *m_chooseTest;
+    QPushButton *m_back;
 };
 
 #endif // TESTTABVIEW_H

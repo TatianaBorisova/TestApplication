@@ -14,13 +14,7 @@ ResultView::ResultView(QWidget *parent) :
     m_header(new QLabel(this)),
     m_sore(new QLabel(this))
 {
-    QFont font("Times", 16);
-
-    m_header->setFont(font);
-    m_fio->setFont(font);
-    m_group->setFont(font);
-    m_sore->setFont(font);
-
+    this->setStyleSheet("font-family: Arial; font-style: normal; font-size: 20pt;");
     m_header->setAlignment(Qt::AlignHCenter);
     m_fio->setAlignment(Qt::AlignHCenter);
     m_group->setAlignment(Qt::AlignHCenter);
@@ -32,8 +26,7 @@ ResultView::ResultView(QWidget *parent) :
 
     m_header->setText("Ваш результат:");
 
-  //  m_vbox->setSizeConstraint(QLayout::SetMinimumSize);
-    m_vbox->setContentsMargins(60, 20, 20, 20);
+    m_vbox->setContentsMargins(80, 150, 80, 80);
     m_vbox->addWidget(m_fio);
     m_vbox->addWidget(m_group);
     m_vbox->addWidget(m_header);
@@ -53,5 +46,5 @@ void ResultView::finishTestResult(const StudentResult &result)
 {
     m_fio->setText(result.firstName + " " + result.secondName + " " + result.surname);
     m_group->setText(result.group);
-    m_sore->setText("Результирующий бал: " + QString::number(result.score) + " из " + QString::number(result.answerInfo.count()*2) + " возможных.");
+    m_sore->setText(QString::number(result.score) + " из " + QString::number(result.answerInfo.count()*2) + " возможных.");
 }

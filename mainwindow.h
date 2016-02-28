@@ -29,7 +29,7 @@ signals:
     void finishTestResult(const StudentResult &result);
 
 private slots:
-    void saveTestQuestions(const QList<TestStructure> &testInfo);
+    void saveTestQuestions(const TestData &testInfo);
     void updateStudentData(const StudentResult &data);
     void addAnswerToStudentInfoVector(const AnswersVector &answer);
 
@@ -42,10 +42,10 @@ private:
 
 private:
     StartView           *m_startWnd;
-    SettingsView      *m_chooseTest;
+    SettingsView        *m_chooseTest;
     StudentInfoView     *m_studentData;
     TestFileReader      *m_fileReader;
-    QList<TestStructure> m_testList;
+    TestData             m_testList;
     StudentResult        m_studentResult;
     TestView            *m_testView;
     ResultView          *m_resultView;

@@ -7,7 +7,7 @@
 #include <QMessageBox>
 
 namespace {
-const int margin = 5;
+const int minHeight = 5;
 const int fieldHeight = 50;
 }
 
@@ -27,28 +27,15 @@ StudentInfoView::StudentInfoView(QWidget *parent) :
 {
     connect(m_nextButton, &QPushButton::clicked, this, &StudentInfoView::nextButtonPressed);
 
-    QFont font("Times", 16);
+    this->setStyleSheet("font-family: Arial; font-style: normal; font-size: 20pt;");
 
     m_nameLabel->setText("Имя:");
     m_secondNameLabel->setText("Отчество:");
     m_surnameLabel->setText("Фамилия:");
     m_groupLabel->setText("Группа:");
 
-    m_nameLabel->setFont(font);
-    m_secondNameLabel->setFont(font);
-    m_surnameLabel->setFont(font);
-    m_groupLabel->setFont(font);
-
-    m_nameField->setFont(font);
-    m_secondField->setFont(font);
-    m_surnameField->setFont(font);
-    m_groupField->setFont(font);
-
     m_info->setText("Пожалуйста, заполните данные для тестирования.");
-    m_info->setFont(font);
-
     m_nextButton->setText("Далее");
-    m_nextButton->setFont(font);
 
     m_centerBox->addWidget(m_nameLabel, 0, 0);
     m_centerBox->addWidget(m_secondNameLabel, 1, 0);
@@ -71,20 +58,20 @@ void StudentInfoView::resize()
     if (wParent)
         setFixedSize(wParent->width(), wParent->height());
 
-    m_centerBox->setContentsMargins(10*margin, margin, 45*margin, margin);
+    m_centerBox->setContentsMargins(10*minHeight, minHeight, 45*minHeight, minHeight);
     m_centerBox->setGeometry(QRect(0, 0, width(), height()));
 
-    m_nameLabel->setFixedSize((width()*0.2) - 2*margin, fieldHeight);
-    m_secondNameLabel->setFixedSize((width()*0.2) - 2*margin, fieldHeight);
-    m_surnameLabel->setFixedSize((width()*0.2) - 2*margin, fieldHeight);
-    m_groupLabel->setFixedSize((width()*0.2) - 2*margin, fieldHeight);
+    m_nameLabel->setFixedSize((width()*0.2) - 2*minHeight, fieldHeight);
+    m_secondNameLabel->setFixedSize((width()*0.2) - 2*minHeight, fieldHeight);
+    m_surnameLabel->setFixedSize((width()*0.2) - 2*minHeight, fieldHeight);
+    m_groupLabel->setFixedSize((width()*0.2) - 2*minHeight, fieldHeight);
 
-    m_nameField->setFixedSize((width()/2) - 2*margin, fieldHeight);
-    m_secondField->setFixedSize((width()/2) - 2*margin, fieldHeight);
-    m_surnameField->setFixedSize((width()/2) - 2*margin, fieldHeight);
-    m_groupField->setFixedSize((width()/2) - 2*margin, fieldHeight);
+    m_nameField->setFixedSize((width()/2) - 2*minHeight, fieldHeight);
+    m_secondField->setFixedSize((width()/2) - 2*minHeight, fieldHeight);
+    m_surnameField->setFixedSize((width()/2) - 2*minHeight, fieldHeight);
+    m_groupField->setFixedSize((width()/2) - 2*minHeight, fieldHeight);
 
-    m_info->setFixedSize(width() - 2*margin, 2*fieldHeight);
+    m_info->setFixedSize(width() - 2*minHeight, 2*fieldHeight);
     m_nextButton->setFixedSize(100, fieldHeight);
 }
 

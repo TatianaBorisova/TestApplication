@@ -15,7 +15,9 @@ public:
     explicit SettingsView(QWidget *parent = 0);
 
 signals:
+    void chosenTestDB(const QString &fileName);
     void chosenTestName(const QString &fileName);
+    void readTests(const QList<TestHeaderData> &test);
 
 protected:
     virtual void resize();
@@ -24,7 +26,6 @@ private:
     QTabWidget    *m_tab;
     QGridLayout   *m_box;
     TestTabView   *m_testPage;
-    ClientTabView *m_clientSettingsPage;
 };
 
 #endif // SETTINGSTVIEW_H

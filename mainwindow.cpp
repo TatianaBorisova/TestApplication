@@ -28,13 +28,19 @@ MainWindow::MainWindow(QWidget *parent) :
     setFixedSize(getScreenGeometry().width()*0.9, getScreenGeometry().height()*0.9);
     move(0, 0);
 
+    m_testView->setFixedSize(width(), height());
+    this->setStyleSheet("font-family: Arial; font-style: normal; font-size: 15pt;");
+
     //view connects
-    connect(m_chooseTest, &SettingsView::chosenTestName, m_fileReader, &TestFileReader::readTestFile);
-    connect(m_startWnd,   &StartView::showView,          this,         &MainWindow::showTestView);
-    connect(this,         &MainWindow::showView,         this,         &MainWindow::showTestView);
+    connect(m_chooseTest, &SettingsView::chosenTestDB,       m_fileReader, &TestFileReader::readAllTestsFromDb);
+    connect(m_chooseTest, &SettingsView::chosenTestName,     m_fileReader, &TestFileReader::readTestFromDb);
+    connect(m_fileReader, &TestFileReader::readTests,        m_chooseTest, &SettingsView::readTests);
+    connect(m_fileReader, &TestFileReader::sendFullTestData, this,         &MainWindow::saveTestQuestions);
+    connect(m_startWnd,   &StartView::showView,    this, &MainWindow::showTestView);
+    connect(this,         &MainWindow::showView,   this, &MainWindow::showTestView);
+    connect(m_chooseTest, &SettingsView::showView, this, &MainWindow::showTestView);
 
     connect(m_testView, &TestView::answeredResult, this, &MainWindow::addAnswerToStudentInfoVector);
-    connect(m_fileReader, &TestFileReader::readInfo, this, &MainWindow::saveTestQuestions);
     connect(m_studentData, &StudentInfoView::nextStep, this, &MainWindow::updateStudentData);
 
     connect(this, &MainWindow::finishTestResult, m_resultView, &ResultView::finishTestResult);
@@ -94,18 +100,18 @@ void MainWindow::setMainWindowSize(TestAppView view)
 
 bool MainWindow::setTestData()
 {
-    if (m_testList.count() <= 0) {
+    if (m_testList.questions.count() <= 0) {
         calculateRresult();
         emit finishTestResult(m_studentResult);
         emit showView(TestResultView);
         return false;
     }
 
-    if (m_testList.count() > 1) {
-        int testNumber = RandomGenerator::getValueInInterval(m_testList.count());
-        m_testView->setTestData(m_testList.takeAt(testNumber));
-    } else if (m_testList.count() == 1) {
-        m_testView->setTestData(m_testList.takeLast());
+    if (m_testList.questions.count() > 1) {
+        int testNumber = RandomGenerator::getValueInInterval(m_testList.questions.count());
+        m_testView->setTestData(m_testList.questions.takeAt(testNumber));
+    } else if (m_testList.questions.count() == 1) {
+        m_testView->setTestData(m_testList.questions.takeLast());
     }
     return true;
 }
@@ -148,9 +154,15 @@ void MainWindow::calculateRresult()
     qDebug() << "score" << m_studentResult.score;
 }
 
-void MainWindow::saveTestQuestions(const QList<TestStructure> &testInfo)
+void MainWindow::saveTestQuestions(const TestData &testInfo)
 {
-    m_testList.clear();
+    m_testList.id = -1;
+    m_testList.questions.clear();
+    m_testList.questionCount = -1;
+    m_testList.testName.clear();
+    m_testList.testTime.setHMS(0, 0, 0);
+    m_testList.questions.clear();
+
     m_testList = testInfo;
 
     emit showView(TestStudentInfoView);

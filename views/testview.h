@@ -11,6 +11,7 @@ class QRadioButton;
 class QVBoxLayout;
 class QStringList;
 class AssureView;
+class CustomButton;
 
 class TestView : public TestBaseView
 {
@@ -18,7 +19,8 @@ class TestView : public TestBaseView
 public:
     explicit TestView(QWidget *parent = 0);
 
-    void setTestData(const TestStructure &question);
+    void setTestData(const TestQuestions &question);
+    void setFixedSize(int w, int h);
 
 signals:
     void answeredResult(const AnswersVector &answer);
@@ -36,7 +38,8 @@ private:
     void clearRadioBtnList();
     void hideEntry();
     void showEntry();
-    void setImg(const QString &imgPath);
+    void setImg(QByteArray img);
+    QString addUpperSymbol(const QString &str);
 
 private:
     QLabel              *m_header;
@@ -46,7 +49,6 @@ private:
     QPushButton         *m_nextBtn;
     QStringList          m_answersList;
     QString              m_trueAnswer;
-    QList<QRadioButton*> m_createdBtn;
     QGridLayout         *m_radioBtnList;
     AssureView          *m_anssureView;
     AnswersVector        m_answer;

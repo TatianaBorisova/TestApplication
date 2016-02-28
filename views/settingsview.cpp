@@ -10,13 +10,14 @@ SettingsView::SettingsView(QWidget *parent) :
     TestBaseView(parent),
     m_tab(new QTabWidget(this)),
     m_box(new QGridLayout(this)),
-    m_testPage(new TestTabView(this)),
-    m_clientSettingsPage(new ClientTabView(this))
+    m_testPage(new TestTabView(this))
 {
+    connect(m_testPage, &TestTabView::showView, this, &SettingsView::showView);
+    connect(m_testPage, &TestTabView::chosenTestDB, this, &SettingsView::chosenTestDB);
     connect(m_testPage, &TestTabView::chosenTestName, this, &SettingsView::chosenTestName);
+    connect(this, &SettingsView::readTests, m_testPage, &TestTabView::fillTestVariants);
 
     m_tab->addTab(m_testPage, "Выбрать тест");
-    m_tab->addTab(m_clientSettingsPage, "Подключение");
 
     m_box->addWidget(m_tab);
     setLayout(m_box);

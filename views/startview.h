@@ -16,6 +16,7 @@ public:
 
 private slots:
     void openTestView();
+    void openSettingsView();
 
 protected:
     virtual void resize();

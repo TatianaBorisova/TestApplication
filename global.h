@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QList>
+#include <QTime>
 
 const int middleWidth = 800;
 const int middleHeight = 600;
@@ -32,6 +33,34 @@ typedef struct student {
     int score;
     QList<AnswersVector> answerInfo;
 } StudentResult;
+
+typedef struct testAnswers {
+    QString correctAnswer;
+    QString uncorrectAnswers;
+    QString imgName;
+    QByteArray image;
+} Answers;
+
+typedef struct questions {
+    QString question;
+    int     weight;
+    Answers answers;
+} TestQuestions;
+
+typedef struct testSt {
+    int id;
+    QString testName;
+    QTime testTime;
+    int questionCount;
+    QList<TestQuestions> questions;
+} TestData;
+
+typedef struct testHeader {
+    int id;
+    QString testName;
+    QTime testTime;
+    int questionCount;
+} TestHeaderData;
 
 enum TestAppView{
     TestStartView = 0,
