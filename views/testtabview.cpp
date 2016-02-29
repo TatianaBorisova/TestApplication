@@ -32,7 +32,7 @@ TestTabView::TestTabView(QWidget *parent) :
     connect(m_chooseFolder, &QPushButton::clicked, this, &TestTabView::chooseFolder);
     connect(m_chooseTest, &QPushButton::clicked, this, &TestTabView::chooseTest);
     connect(m_back, &QPushButton::clicked, this, &TestTabView::back);
-    connect(this, &TestTabView::addPath, this, &TestTabView::AddToChoiceBox);
+    connect(this, &TestTabView::addPath, this, &TestTabView::addToChoiceBox);
 
     m_downloadTest->setEnabled(false); //TBD make enabled after logic adding
     QFont wdgFont("Times", 11);
@@ -132,7 +132,13 @@ void TestTabView::fillTestVariants(const QList<TestHeaderData> &test)
     }
 }
 
-void TestTabView::AddToChoiceBox(const QString &filepath)
+void TestTabView::dbError()
+{
+    m_chooseTest->setEnabled(false);
+    m_chooseTestBD->setEnabled(true);
+}
+
+void TestTabView::addToChoiceBox(const QString &filepath)
 {
     QString file = filepath;
     if (!file.isEmpty()) {

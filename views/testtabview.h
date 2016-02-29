@@ -25,6 +25,7 @@ public slots:
     void chooseFolder();
     void chooseTest();
     void fillTestVariants(const QList<TestHeaderData> &test);
+    void dbError();
 
 private slots:
     void back();
@@ -32,7 +33,7 @@ private slots:
 private:
     bool findDumlicateFile(QListWidget *itemBox, const QString &fileName);
     void fillChoiceBox(QString folderPath);
-    void AddToChoiceBox(const QString &filepath);
+    void addToChoiceBox(const QString &filepath);
 
 protected:
     virtual void resize();

@@ -18,6 +18,7 @@ signals:
     void chosenTestDB(const QString &fileName);
     void chosenTestName(const QString &fileName);
     void readTests(const QList<TestHeaderData> &test);
+    void dbError();
 
 protected:
     virtual void resize();

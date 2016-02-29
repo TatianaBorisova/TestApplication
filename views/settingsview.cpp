@@ -15,6 +15,7 @@ SettingsView::SettingsView(QWidget *parent) :
     connect(m_testPage, &TestTabView::showView, this, &SettingsView::showView);
     connect(m_testPage, &TestTabView::chosenTestDB, this, &SettingsView::chosenTestDB);
     connect(m_testPage, &TestTabView::chosenTestName, this, &SettingsView::chosenTestName);
+    connect(this, &SettingsView::dbError, m_testPage, &TestTabView::dbError);
     connect(this, &SettingsView::readTests, m_testPage, &TestTabView::fillTestVariants);
 
     m_tab->addTab(m_testPage, "Выбрать тест");

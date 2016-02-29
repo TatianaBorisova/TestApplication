@@ -32,9 +32,10 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setStyleSheet("font-family: Arial; font-style: normal; font-size: 15pt;");
 
     //view connects
-    connect(m_chooseTest, &SettingsView::chosenTestDB,       m_fileReader, &TestFileReader::readAllTestsFromDb);
-    connect(m_chooseTest, &SettingsView::chosenTestName,     m_fileReader, &TestFileReader::readTestFromDb);
-    connect(m_fileReader, &TestFileReader::readTests,        m_chooseTest, &SettingsView::readTests);
+    connect(m_chooseTest, &SettingsView::chosenTestDB,   m_fileReader, &TestFileReader::readAllTestsFromDb);
+    connect(m_fileReader, &TestFileReader::dbError,      m_chooseTest, &SettingsView::dbError);
+    connect(m_chooseTest, &SettingsView::chosenTestName, m_fileReader, &TestFileReader::readTestFromDb);
+    connect(m_fileReader, &TestFileReader::readTests,    m_chooseTest, &SettingsView::readTests);
     connect(m_fileReader, &TestFileReader::sendFullTestData, this,         &MainWindow::saveTestQuestions);
     connect(m_startWnd,   &StartView::showView,    this, &MainWindow::showTestView);
     connect(this,         &MainWindow::showView,   this, &MainWindow::showTestView);

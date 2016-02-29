@@ -20,6 +20,7 @@ signals:
     void readInfo(const QList<TestStructure> &testInfo);
     void readTests(const QList<TestHeaderData> &test);
     void sendFullTestData(const TestData &data);
+    void dbError();
 
 private:
     QString m_Db;

@@ -72,6 +72,7 @@ void TestFileReader::readAllTestsFromDb(const QString &fileName)
     dbPtr.setDatabaseName(fileName);
     if (!dbPtr.open()) {
         QMessageBox::critical(0, "Can not open database", "Не могу открыть базу данных.\n");
+        emit dbError();
         return;
     }
 
@@ -104,6 +105,7 @@ void TestFileReader::readTestFromDb(const QString &testName)
     dbPtr.setDatabaseName(m_Db);
     if (!dbPtr.open()) {
         QMessageBox::critical(0, "Can not open database", "Не могу открыть базу данных.\n");
+        emit dbError();
         return;
     }
 
