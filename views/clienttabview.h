@@ -5,7 +5,8 @@
 
 class QPushButton;
 class QGridLayout;
-class QListWidget;
+class QLabel;
+class QLineEdit;
 
 class ClientTabView : public TestBaseView
 {
@@ -15,10 +16,29 @@ public:
 
     void setFixedSize(int w, int h);
 
+signals:
+    void startConnection(const QString &ip, int port);
+
+public slots:
+    void setClientConnectionState(int error);
+    void setIp(const QString &ip);
+    void setPort(const QString &port);
+
 protected:
     virtual void resize();
 
+private slots:
+    void saveConnectionData();
+    void back();
+
 private:
+    QLabel      *m_host;
+    QLabel      *m_port;
+    QLineEdit   *m_hostBox;
+    QLineEdit   *m_portBox;
+    QPushButton *m_save;
+    QPushButton *m_back;
+    QLabel      *m_connectionState;
     QGridLayout *m_box;
 };
 

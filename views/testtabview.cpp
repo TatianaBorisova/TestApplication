@@ -38,11 +38,7 @@ TestTabView::TestTabView(QWidget *parent) :
     QFont wdgFont("Times", 11);
     m_testBox->setFont(wdgFont);
 
-    m_chooseTestBD->setFixedHeight(50);
-    m_downloadTest->setFixedHeight(50);
-    m_chooseFolder->setFixedHeight(50);
-    m_chooseTest->setFixedHeight(50);
-    m_back->setFixedHeight(50);
+    this->setStyleSheet("QPushButton { height: 45px; }");
 
     m_vbox->addWidget(m_downloadTest);
     m_vbox->addWidget(m_chooseFolder);

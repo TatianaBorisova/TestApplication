@@ -3,6 +3,7 @@
 #include "views/studentinfoview.h"
 #include "views/testview.h"
 #include "views/resultview.h"
+#include "views/clienttabview.h"
 
 #include "testfilereader.h"
 #include "randomgenerator.h"
@@ -22,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_fileReader(new TestFileReader(this)),
     m_testView(new TestView(this)),
     m_resultView(new ResultView(this)),
+    m_clientView(new ClientTabView(this)),
     m_client(new TcpClient(this))
 {
     hidePreviuosWindows();
@@ -40,12 +42,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_startWnd,   &StartView::showView,    this, &MainWindow::showTestView);
     connect(this,         &MainWindow::showView,   this, &MainWindow::showTestView);
     connect(m_chooseTest, &SettingsView::showView, this, &MainWindow::showTestView);
+    connect(m_clientView, &ClientTabView::showView, this, &MainWindow::showTestView);
 
     connect(m_testView, &TestView::answeredResult, this, &MainWindow::addAnswerToStudentInfoVector);
     connect(m_studentData, &StudentInfoView::nextStep, this, &MainWindow::updateStudentData);
 
     connect(this, &MainWindow::finishTestResult, m_resultView, &ResultView::finishTestResult);
     connect(this, &MainWindow::finishTestResult, m_client, &TcpClient::sendToServer);
+    connect(m_clientView, &ClientTabView::startConnection, m_client, &TcpClient::connectToHost);
+    connect(m_client, &TcpClient::connected, m_clientView, &ClientTabView::setClientConnectionState);
 }
 
 void MainWindow::showTestView(TestAppView view)
@@ -69,6 +74,11 @@ void MainWindow::showTestView(TestAppView view)
         break;
     case TestResultView:
         m_resultView->show();
+        break;
+    case TestClientSettingsView:
+        m_clientView->setIp(m_client->getServerIp());
+        m_clientView->setPort(QString::number(m_client->getServerPort()));
+        m_clientView->show();
         break;
     default:
         break;

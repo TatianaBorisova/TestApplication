@@ -67,7 +67,8 @@ enum TestAppView{
     TestWayView,
     TestStudentInfoView,
     TestEntryView,
-    TestResultView
+    TestResultView,
+    TestClientSettingsView
 };
 
 #endif // GLOBAL

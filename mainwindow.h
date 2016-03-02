@@ -11,6 +11,7 @@ class TestFileReader;
 class StudentInfoView;
 class TestView;
 class ResultView;
+class ClientTabView;
 class TcpClient;
 
 class MainWindow : public QWidget
@@ -49,6 +50,7 @@ private:
     StudentResult        m_studentResult;
     TestView            *m_testView;
     ResultView          *m_resultView;
+    ClientTabView       *m_clientView;
     TcpClient           *m_client;
 };
 

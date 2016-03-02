@@ -49,7 +49,7 @@ void StartView::openTestView()
 
 void StartView::openSettingsView()
 {
-    QMessageBox::warning(0, "Error", "Я кнопка - задел на будущее. Пока работать отказываюсь.");
+    emit showView(TestClientSettingsView);
 }
 
 StartView::~StartView()
