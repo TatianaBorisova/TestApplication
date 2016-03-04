@@ -18,6 +18,7 @@ public:
 
 signals:
     void startConnection(const QString &ip, int port);
+    void refuseConnection();
 
 public slots:
     void setClientConnectionState(int error);
@@ -40,6 +41,7 @@ private:
     QPushButton *m_back;
     QLabel      *m_connectionState;
     QGridLayout *m_box;
+    int          m_error;
 };
 
 #endif // CLIENTTABVIEW_H

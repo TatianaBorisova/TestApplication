@@ -18,11 +18,12 @@ signals:
     void connected(int error = 0);
 
 public slots:
-    void connectToHost(const QString &host, int port);
+    bool connectToHost(const QString &host, int port);
     void disconnectToHost();
     void sendToServer(const StudentResult &result);
     QString getServerIp() const;
     int getServerPort() const;
+    int getErrorState() const;
 
 private slots:
     void slotReadyRead();
@@ -34,6 +35,7 @@ private:
     quint16     m_nNextBlockSize;
     QString     m_host;
     int         m_port;
+    int         m_connectionError;
 };
 
 #endif // TCPCLIENT_H

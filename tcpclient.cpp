@@ -14,33 +14,39 @@ const QString divSymbol = ";";
 TcpClient::TcpClient(QObject *parent) :
     QObject(parent),
     m_pTcpSocket(new QTcpSocket(this)),
-    m_nNextBlockSize(0)
+    m_nNextBlockSize(0),
+    m_connectionError(-1)
 {
+    m_port = portNumber;
+
     //TBD запилить поиск хоста в сетке
     //find server in network
     foreach (const QHostAddress &address, QNetworkInterface::allAddresses()) {
-        if (!address.isNull() && address.protocol() == QAbstractSocket::IPv4Protocol && address != QHostAddress(QHostAddress::LocalHost)) {
+        if (!address.isNull() && address.protocol() == QAbstractSocket::IPv4Protocol
+                && address != QHostAddress(QHostAddress::LocalHost)) {
             m_host = address.toString();
+            if (connectToHost(m_host, m_port))
+                break;
         }
     }
-    m_port = portNumber;
 }
 
-void TcpClient::connectToHost(const QString &host, int port)
+bool TcpClient::connectToHost(const QString &host, int port)
 {
     m_pTcpSocket->connectToHost(host, port);
 
     if (!m_pTcpSocket->waitForConnected(3000)) {
-        qDebug() << "Client is unable to connect to Server " << m_pTcpSocket->errorString();
-        emit connected(- 1);
-        return;
+        emit connected(m_connectionError = -1);
+        return false;
     }
 
     connect(m_pTcpSocket, SIGNAL(connected()), SLOT(slotConnected()));
     connect(m_pTcpSocket, SIGNAL(readyRead()), SLOT(slotReadyRead()));
     connect(m_pTcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
             this,         SLOT(slotError(QAbstractSocket::SocketError)));
-    emit connected(0);
+
+    emit connected(m_connectionError = 0);
+    return true;
 }
 
 void TcpClient::disconnectToHost()
@@ -50,6 +56,7 @@ void TcpClient::disconnectToHost()
     disconnect(m_pTcpSocket, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
     disconnect(m_pTcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
                this,         SLOT(slotError(QAbstractSocket::SocketError)));
+    emit connected(m_connectionError = -1);
 }
 
 void TcpClient::slotReadyRead()
@@ -131,4 +138,9 @@ QString TcpClient::getServerIp() const
 int TcpClient::getServerPort() const
 {
     return m_port;
+}
+
+int TcpClient::getErrorState() const
+{
+    return m_connectionError;
 }

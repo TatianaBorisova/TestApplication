@@ -33,6 +33,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_testView->setFixedSize(width(), height());
     this->setStyleSheet("font-family: Arial; font-style: normal; font-size: 15pt;");
 
+    m_clientView->setClientConnectionState(m_client->getErrorState());
+
     //view connects
     connect(m_chooseTest, &SettingsView::chosenTestDB,   m_fileReader, &TestFileReader::readAllTestsFromDb);
     connect(m_fileReader, &TestFileReader::dbError,      m_chooseTest, &SettingsView::dbError);
@@ -50,6 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, &MainWindow::finishTestResult, m_resultView, &ResultView::finishTestResult);
     connect(this, &MainWindow::finishTestResult, m_client, &TcpClient::sendToServer);
     connect(m_clientView, &ClientTabView::startConnection, m_client, &TcpClient::connectToHost);
+    connect(m_clientView, &ClientTabView::refuseConnection, m_client, &TcpClient::disconnectToHost);
     connect(m_client, &TcpClient::connected, m_clientView, &ClientTabView::setClientConnectionState);
 }
 

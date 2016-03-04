@@ -13,10 +13,11 @@ ClientTabView::ClientTabView(QWidget *parent) :
     m_port(new QLabel("Порт: ", this)),
     m_hostBox(new QLineEdit(this)),
     m_portBox(new QLineEdit(this)),
-    m_save(new QPushButton("Сохранить и подключиться", this)),
+    m_save(new QPushButton("Подключиться", this)),
     m_back(new QPushButton("Назад", this)),
     m_connectionState(new QLabel("Статус: ", this)),
-    m_box(new QGridLayout(this))
+    m_box(new QGridLayout(this)),
+    m_error(-1)
 {
     connect(m_save, &QPushButton::clicked, this, &ClientTabView::saveConnectionData);
     connect(m_back, &QPushButton::clicked, this, &ClientTabView::back);
@@ -30,9 +31,13 @@ ClientTabView::ClientTabView(QWidget *parent) :
     m_box->addWidget(m_hostBox, 0, 1);
     m_box->addWidget(m_port, 1, 0);
     m_box->addWidget(m_portBox, 1, 1);
-    m_box->addWidget(m_save, 2, 0);
-    m_box->addWidget(m_back, 2, 1);
-    m_box->addWidget(m_connectionState, 3, 0);
+    m_box->addWidget(m_connectionState, 2, 0);
+
+    m_box->addWidget(m_save, 3, 0);
+    m_box->addWidget(m_back, 3, 1);
+
+    m_box->setSpacing(50);
+    m_box->setMargin(50);
 
     setLayout(m_box);
 }
@@ -61,16 +66,22 @@ void ClientTabView::setPort(const QString &port)
 
 void ClientTabView::saveConnectionData()
 {
-    emit startConnection(m_hostBox->text(), m_portBox->text().toInt());
+    if (m_error == 0) {
+        emit refuseConnection();
+    } else {
+        emit startConnection(m_hostBox->text(), m_portBox->text().toInt());
+    }
 }
 
 void ClientTabView::setClientConnectionState(int error)
 {
-    qDebug() << error;
-    if (error == 0) {
-        m_connectionState->setText("Статус: Подлючен");
+    m_error = error;
+    if (m_error == 0) {
+        m_connectionState->setText("Статус: Клиент подключен");
+        m_save->setText("Отключиться");
     } else {
-        m_connectionState->setText("Статус: Ошибка подключения");
+        m_connectionState->setText("Статус: Клиент отключен");
+        m_save->setText("Подключиться");
     }
 }
 
