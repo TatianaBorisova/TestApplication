@@ -15,10 +15,9 @@ TcpClient::TcpClient(QObject *parent) :
     QObject(parent),
     m_pTcpSocket(new QTcpSocket(this)),
     m_nNextBlockSize(0),
+    m_port(portNumber),
     m_connectionError(-1)
 {
-    m_port = portNumber;
-
     //TBD запилить поиск хоста в сетке
     //find server in network
     foreach (const QHostAddress &address, QNetworkInterface::allAddresses()) {

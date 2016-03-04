@@ -25,7 +25,7 @@ ClientTabView::ClientTabView(QWidget *parent) :
     this->setStyleSheet("QPushButton { height: 45px; }");
 
     m_connectionState->setFixedHeight(50);
-    m_back->setFixedWidth(100);
+    m_back->setFixedWidth(250);
 
     m_box->addWidget(m_host, 0, 0);
     m_box->addWidget(m_hostBox, 0, 1);

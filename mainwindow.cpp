@@ -98,9 +98,9 @@ void MainWindow::setMainWindowSize(TestAppView view)
     switch(view) {
     case TestStartView:
     case TestWayView:
-        mainW = getScreenGeometry().width()*0.5;
-        mainH = getScreenGeometry().height()*0.5;
-        break;
+//        mainW = getScreenGeometry().width()*0.5;
+//        mainH = getScreenGeometry().height()*0.5;
+//        break;
     case TestStudentInfoView:
     case TestEntryView:
     case TestResultView:

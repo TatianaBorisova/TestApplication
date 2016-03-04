@@ -5,10 +5,8 @@
 #include <QHBoxLayout>
 #include <QRect>
 #include <QMessageBox>
-
-namespace {
-const int btnSize = 200;
-}
+#include <QApplication>
+#include <QDesktopWidget>
 
 StartView::StartView(QWidget *parent)
     : TestBaseView(parent),
@@ -21,6 +19,8 @@ StartView::StartView(QWidget *parent)
 
     m_test->setIcon(QIcon(QPixmap(":res/test.png")));
     m_settings->setIcon(QIcon(QPixmap(":res/settings.png")));
+
+    int btnSize = QApplication::desktop()->screenGeometry().width()*0.2;
 
     m_test->setIconSize(QSize(btnSize, btnSize));
     m_settings->setIconSize(QSize(btnSize, btnSize));
