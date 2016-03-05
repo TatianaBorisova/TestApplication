@@ -93,14 +93,17 @@ void TcpClient::slotError(QAbstractSocket::SocketError err)
                                         ? "The connection was refused."
                                         : QString(m_pTcpSocket->errorString()));
 
+    emit connected(m_connectionError = -1);
+
     QMessageBox::warning(0, "Error", strError);
 }
 
 void TcpClient::sendToServer(const StudentResult &result)
 {
     //create msg string
-    QString studentResult =
-            result.firstName
+    QString studentResult = result.testName
+            + divSymbol
+            + result.firstName
             + divSymbol
             + result.secondName
             + divSymbol
@@ -108,10 +111,15 @@ void TcpClient::sendToServer(const StudentResult &result)
             + divSymbol
             + result.group
             + divSymbol
-            + QString::number(result.score);
+            + QString::number(result.score)
+            + divSymbol
+            + QString::number(result.maxPosibleScore);
 
-    //calculate msg summ
-    int msgSize = headerMsgSize + studentResult.length();
+    //non latin symbols have more size then latin,
+    //so string length != real symbols array size
+    QByteArray bytes = studentResult.toUtf8();
+    //calculate msg sum
+    int msgSize = headerMsgSize + bytes.length();
 
     //put data to bytearray
     QByteArray  arrBlock;
@@ -121,7 +129,8 @@ void TcpClient::sendToServer(const StudentResult &result)
     arrBlock.resize(msgSize);
 
     //send data to server
-    m_pTcpSocket->write(arrBlock);
+    qDebug() << m_pTcpSocket->write(arrBlock);
+    m_pTcpSocket->waitForBytesWritten(3000);
 }
 
 void TcpClient::slotConnected()

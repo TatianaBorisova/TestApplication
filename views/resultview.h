@@ -6,6 +6,8 @@
 
 class QLabel;
 class QVBoxLayout;
+class QPushButton;
+
 class ResultView : public TestBaseView
 {
     Q_OBJECT
@@ -19,11 +21,14 @@ protected:
     virtual void resize();
 
 private:
+    void back();
+
     QVBoxLayout *m_vbox;
     QLabel      *m_fio;
     QLabel      *m_group;
     QLabel      *m_header;
     QLabel      *m_sore;
+    QPushButton *m_back;
 };
 
 #endif // RESULTVIEW_H

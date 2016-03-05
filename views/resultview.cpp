@@ -3,6 +3,7 @@
 
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QPushButton>
 
 static const int labelHeight = 60;
 
@@ -12,9 +13,15 @@ ResultView::ResultView(QWidget *parent) :
     m_fio(new QLabel(this)),
     m_group(new QLabel(this)),
     m_header(new QLabel(this)),
-    m_sore(new QLabel(this))
+    m_sore(new QLabel(this)),
+    m_back(new QPushButton("Вернуться на главную", this))
 {
+    connect(m_back, &QPushButton::clicked, this, &ResultView::back);
+
     this->setStyleSheet("font-family: Arial; font-style: normal; font-size: 20pt;");
+
+    m_back->setFixedWidth(300);
+
     m_header->setAlignment(Qt::AlignHCenter);
     m_fio->setAlignment(Qt::AlignHCenter);
     m_group->setAlignment(Qt::AlignHCenter);
@@ -31,6 +38,8 @@ ResultView::ResultView(QWidget *parent) :
     m_vbox->addWidget(m_group);
     m_vbox->addWidget(m_header);
     m_vbox->addWidget(m_sore);
+    m_vbox->addWidget(m_back);
+    m_vbox->setAlignment(m_back, Qt::AlignHCenter);
 
     setLayout(m_vbox);
 }
@@ -47,4 +56,9 @@ void ResultView::finishTestResult(const StudentResult &result)
     m_fio->setText(result.firstName + " " + result.secondName + " " + result.surname);
     m_group->setText(result.group);
     m_sore->setText(QString::number(result.score) + " из " + QString::number(result.answerInfo.count()*2) + " возможных.");
+}
+
+void ResultView::back()
+{
+    emit showView(TestStartView);
 }

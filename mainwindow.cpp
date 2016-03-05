@@ -41,10 +41,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_chooseTest, &SettingsView::chosenTestName, m_fileReader, &TestFileReader::readTestFromDb);
     connect(m_fileReader, &TestFileReader::readTests,    m_chooseTest, &SettingsView::readTests);
     connect(m_fileReader, &TestFileReader::sendFullTestData, this,         &MainWindow::saveTestQuestions);
+
     connect(m_startWnd,   &StartView::showView,    this, &MainWindow::showTestView);
     connect(this,         &MainWindow::showView,   this, &MainWindow::showTestView);
     connect(m_chooseTest, &SettingsView::showView, this, &MainWindow::showTestView);
     connect(m_clientView, &ClientTabView::showView, this, &MainWindow::showTestView);
+    connect(m_resultView, &ResultView::showView, this, &MainWindow::showTestView);
 
     connect(m_testView, &TestView::answeredResult, this, &MainWindow::addAnswerToStudentInfoVector);
     connect(m_studentData, &StudentInfoView::nextStep, this, &MainWindow::updateStudentData);
@@ -98,14 +100,11 @@ void MainWindow::setMainWindowSize(TestAppView view)
     switch(view) {
     case TestStartView:
     case TestWayView:
-//        mainW = getScreenGeometry().width()*0.5;
-//        mainH = getScreenGeometry().height()*0.5;
-//        break;
     case TestStudentInfoView:
     case TestEntryView:
     case TestResultView:
     default:
-        mainW = getScreenGeometry().width()*0.9;
+        mainW = getScreenGeometry().width()*0.98;
         mainH = getScreenGeometry().height()*0.9;
         break;
     }
@@ -163,9 +162,13 @@ void MainWindow::calculateRresult()
                 score++;
         }
     }
-    m_studentResult.score = score;
 
-    qDebug() << "score" << m_studentResult.score;
+    m_studentResult.testName = m_testList.testName;
+    m_studentResult.score = score;
+    m_studentResult.maxPosibleScore = m_studentResult.answerInfo.count()*2; //double questions count
+
+    qDebug() << "m_studentResult.testName = " << m_studentResult.testName;
+    qDebug() << "score" << m_studentResult.score << "max possible score " << m_studentResult.maxPosibleScore;
 }
 
 void MainWindow::saveTestQuestions(const TestData &testInfo)
