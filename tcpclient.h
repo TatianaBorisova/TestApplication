@@ -16,10 +16,13 @@ public:
 
 signals:
     void connected(int error = 0);
+    void serverIpChanged(const QString &ip);
+    void serverPortChanged(int port);
 
 public slots:
     bool connectToHost(const QString &host, int port);
-    void disconnectToHost();
+    void userTryConnectToHost(const QString &host, int port);
+    void disconnectHost();
     void sendToServer(const StudentResult &result);
     QString getServerIp() const;
     int getServerPort() const;
@@ -29,13 +32,19 @@ private slots:
     void slotReadyRead();
     void slotError(QAbstractSocket::SocketError);
     void slotConnected();
+    bool findLocalIpv4InterfaceData();
+    QList<int> getNumbersFromIp(const QString &value);
+    void setServerIp(const QString &ip);
+    void setServerPort(int port);
 
 private:
     QTcpSocket* m_pTcpSocket;
     quint16     m_nNextBlockSize;
     QString     m_host;
     int         m_port;
-    int         m_connectionError;
+    QString     m_mask;
+  //  QString     m_broadcast;
+    int         m_connectionState;
 };
 
 #endif // TCPCLIENT_H

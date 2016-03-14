@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_fileReader, &TestFileReader::dbError,      m_chooseTest, &SettingsView::dbError);
     connect(m_chooseTest, &SettingsView::chosenTestName, m_fileReader, &TestFileReader::readTestFromDb);
     connect(m_fileReader, &TestFileReader::readTests,    m_chooseTest, &SettingsView::readTests);
-    connect(m_fileReader, &TestFileReader::sendFullTestData, this,         &MainWindow::saveTestQuestions);
+    connect(m_fileReader, &TestFileReader::sendFullTestData, this,     &MainWindow::saveTestQuestions);
 
     connect(m_startWnd,   &StartView::showView,    this, &MainWindow::showTestView);
     connect(this,         &MainWindow::showView,   this, &MainWindow::showTestView);
@@ -53,9 +53,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(this, &MainWindow::finishTestResult, m_resultView, &ResultView::finishTestResult);
     connect(this, &MainWindow::finishTestResult, m_client, &TcpClient::sendToServer);
-    connect(m_clientView, &ClientTabView::startConnection, m_client, &TcpClient::connectToHost);
-    connect(m_clientView, &ClientTabView::refuseConnection, m_client, &TcpClient::disconnectToHost);
+    connect(m_clientView, &ClientTabView::startConnection, m_client, &TcpClient::userTryConnectToHost);
+    connect(m_clientView, &ClientTabView::refuseConnection, m_client, &TcpClient::disconnectHost);
     connect(m_client, &TcpClient::connected, m_clientView, &ClientTabView::setClientConnectionState);
+    connect(m_client, &TcpClient::connected, m_chooseTest, &SettingsView::clientConnectionState);
+    connect(m_client, &TcpClient::serverIpChanged, m_clientView, &ClientTabView::setIp);
+    connect(m_client, &TcpClient::serverPortChanged, m_clientView, &ClientTabView::setPort);
 }
 
 void MainWindow::showTestView(TestAppView view)
@@ -82,7 +85,7 @@ void MainWindow::showTestView(TestAppView view)
         break;
     case TestClientSettingsView:
         m_clientView->setIp(m_client->getServerIp());
-        m_clientView->setPort(QString::number(m_client->getServerPort()));
+        m_clientView->setPort(m_client->getServerPort());
         m_clientView->show();
         break;
     default:

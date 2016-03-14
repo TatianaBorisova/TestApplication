@@ -19,6 +19,7 @@ signals:
     void chosenTestName(const QString &fileName);
     void readTests(const QList<TestHeaderData> &test);
     void dbError();
+    void clientConnectionState(int state);
 
 protected:
     virtual void resize();

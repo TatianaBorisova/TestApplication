@@ -26,7 +26,8 @@ TestTabView::TestTabView(QWidget *parent) :
     m_downloadTest(new QPushButton("Загрузить БД с сервера", this)),
     m_chooseFolder(new QPushButton("Загрузить БД из папки", this)),
     m_chooseTest(new QPushButton("Выбрать тест", this)),
-    m_back(new QPushButton("Вернуться на главную", this))
+    m_back(new QPushButton("Вернуться на главную", this)),
+    m_connectionState(-1)
 {
     connect(m_chooseTestBD, &QPushButton::clicked, this, &TestTabView::chooseTestDb);
     connect(m_chooseFolder, &QPushButton::clicked, this, &TestTabView::chooseFolder);
@@ -81,8 +82,16 @@ void TestTabView::resize()
     fillChoiceBox(QDir::currentPath() + "/test/");
 }
 
+void TestTabView::checkConnectionState()
+{
+    if (m_connectionState != 0) {
+        QMessageBox::warning(0, "Warning", "Внимание, Вы не подключены к сети. Вы можете выбрать и пройти тест, но результаты тестирования не будут сохранены.");
+    }
+}
+
 void TestTabView::chooseTestDb()
 {
+    checkConnectionState();
     if (m_testBox->count() > 0) {
         QListWidgetItem *item = m_testBox->currentItem();
         if (item) {
@@ -97,6 +106,7 @@ void TestTabView::chooseTestDb()
 
 void TestTabView::chooseFolder()
 {
+    checkConnectionState();
     QString filePath = QFileDialog::getExistingDirectory(this, tr("Open Directory"));
     emit addPath(filePath);
     m_chooseTest->setEnabled(false);
@@ -105,6 +115,7 @@ void TestTabView::chooseFolder()
 
 void TestTabView::chooseTest()
 {
+    checkConnectionState();
     if (m_testBox->count() > 0) {
         QListWidgetItem *item = m_testBox->currentItem();
         if (item)
@@ -132,6 +143,11 @@ void TestTabView::dbError()
 {
     m_chooseTest->setEnabled(false);
     m_chooseTestBD->setEnabled(true);
+}
+
+void TestTabView::setClientConnectionState(int state)
+{
+    m_connectionState = state;
 }
 
 void TestTabView::addToChoiceBox(const QString &filepath)

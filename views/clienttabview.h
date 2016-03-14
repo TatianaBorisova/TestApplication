@@ -23,13 +23,14 @@ signals:
 public slots:
     void setClientConnectionState(int error);
     void setIp(const QString &ip);
-    void setPort(const QString &port);
+    void setPort(int port);
 
 protected:
     virtual void resize();
 
 private slots:
-    void saveConnectionData();
+    void sendChosenConnectionData();
+    void setDefaultConnectionData();
     void back();
 
 private:
@@ -37,7 +38,8 @@ private:
     QLabel      *m_port;
     QLineEdit   *m_hostBox;
     QLineEdit   *m_portBox;
-    QPushButton *m_save;
+    QPushButton *m_connectToChosen;
+    QPushButton *m_connectToAny;
     QPushButton *m_back;
     QLabel      *m_connectionState;
     QGridLayout *m_box;
