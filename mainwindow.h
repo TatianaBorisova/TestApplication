@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QWidget>
+#include <QTcpSocket>
 
 #include "global.h"
 
@@ -21,8 +22,11 @@ class MainWindow : public QWidget
 public:
     MainWindow(QWidget *parent = 0);
 
+    void startServerSearch();
+
 public slots:
     void showTestView(TestAppView view);
+    void slotError(QAbstractSocket::SocketError err, const QString &errorStr);
 
 signals:
     void showView(TestAppView view);
@@ -40,18 +44,19 @@ private:
     QRect getScreenGeometry() const;
     void hidePreviuosWindows();
     void calculateRresult();
+    void creareClientThread();
 
 private:
-    StartView           *m_startWnd;
-    SettingsView        *m_chooseTest;
-    StudentInfoView     *m_studentData;
-    TestFileReader      *m_fileReader;
-    TestData             m_testList;
-    StudentResult        m_studentResult;
-    TestView            *m_testView;
-    ResultView          *m_resultView;
-    ClientTabView       *m_clientView;
-    TcpClient           *m_client;
+    StartView       *m_startWnd;
+    SettingsView    *m_chooseTest;
+    StudentInfoView *m_studentData;
+    TestFileReader  *m_fileReader;
+    TestData         m_testList;
+    StudentResult    m_studentResult;
+    TestView        *m_testView;
+    ResultView      *m_resultView;
+    ClientTabView   *m_clientView;
+    TcpClient       *m_client;
 };
 
 #endif // MAINWINDOW_H

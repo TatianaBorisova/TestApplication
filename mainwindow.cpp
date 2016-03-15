@@ -14,6 +14,8 @@
 #include <QDesktopWidget>
 #include <QObjectList>
 #include <QDebug>
+#include <QThread>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent),
@@ -24,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_testView(new TestView(this)),
     m_resultView(new ResultView(this)),
     m_clientView(new ClientTabView(this)),
-    m_client(new TcpClient(this))
+    m_client(new TcpClient())
 {
     hidePreviuosWindows();
     setFixedSize(getScreenGeometry().width()*0.9, getScreenGeometry().height()*0.9);
@@ -34,6 +36,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setStyleSheet("font-family: Arial; font-style: normal; font-size: 15pt;");
 
     m_clientView->setClientConnectionState(m_client->getErrorState());
+    m_clientView->setIp(m_client->getServerIp());
+    m_clientView->setPort(m_client->getServerPort());
 
     //view connects
     connect(m_chooseTest, &SettingsView::chosenTestDB,   m_fileReader, &TestFileReader::readAllTestsFromDb);
@@ -42,23 +46,17 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_fileReader, &TestFileReader::readTests,    m_chooseTest, &SettingsView::readTests);
     connect(m_fileReader, &TestFileReader::sendFullTestData, this,     &MainWindow::saveTestQuestions);
 
-    connect(m_startWnd,   &StartView::showView,    this, &MainWindow::showTestView);
-    connect(this,         &MainWindow::showView,   this, &MainWindow::showTestView);
-    connect(m_chooseTest, &SettingsView::showView, this, &MainWindow::showTestView);
+    connect(m_startWnd,   &StartView::showView,     this, &MainWindow::showTestView);
+    connect(this,         &MainWindow::showView,    this, &MainWindow::showTestView);
+    connect(m_chooseTest, &SettingsView::showView,  this, &MainWindow::showTestView);
     connect(m_clientView, &ClientTabView::showView, this, &MainWindow::showTestView);
-    connect(m_resultView, &ResultView::showView, this, &MainWindow::showTestView);
+    connect(m_resultView, &ResultView::showView,    this, &MainWindow::showTestView);
 
-    connect(m_testView, &TestView::answeredResult, this, &MainWindow::addAnswerToStudentInfoVector);
+    connect(m_testView, &TestView::answeredResult,     this, &MainWindow::addAnswerToStudentInfoVector);
     connect(m_studentData, &StudentInfoView::nextStep, this, &MainWindow::updateStudentData);
+    connect(this, &MainWindow::finishTestResult,            m_resultView, &ResultView::finishTestResult);
 
-    connect(this, &MainWindow::finishTestResult, m_resultView, &ResultView::finishTestResult);
-    connect(this, &MainWindow::finishTestResult, m_client, &TcpClient::sendToServer);
-    connect(m_clientView, &ClientTabView::startConnection, m_client, &TcpClient::userTryConnectToHost);
-    connect(m_clientView, &ClientTabView::refuseConnection, m_client, &TcpClient::disconnectHost);
-    connect(m_client, &TcpClient::connected, m_clientView, &ClientTabView::setClientConnectionState);
-    connect(m_client, &TcpClient::connected, m_chooseTest, &SettingsView::clientConnectionState);
-    connect(m_client, &TcpClient::serverIpChanged, m_clientView, &ClientTabView::setIp);
-    connect(m_client, &TcpClient::serverPortChanged, m_clientView, &ClientTabView::setPort);
+    creareClientThread();
 }
 
 void MainWindow::showTestView(TestAppView view)
@@ -84,8 +82,6 @@ void MainWindow::showTestView(TestAppView view)
         m_resultView->show();
         break;
     case TestClientSettingsView:
-        m_clientView->setIp(m_client->getServerIp());
-        m_clientView->setPort(m_client->getServerPort());
         m_clientView->show();
         break;
     default:
@@ -93,6 +89,20 @@ void MainWindow::showTestView(TestAppView view)
     }
 
     this->show();
+}
+
+void MainWindow::slotError(QAbstractSocket::SocketError err, const QString &errorStr)
+{
+    QString strError = "Error: " + (err == QAbstractSocket::HostNotFoundError
+                                    ? "The host was not found."
+                                    : err == QAbstractSocket::RemoteHostClosedError
+                                      ? "The remote host is closed."
+                                      : err == QAbstractSocket::ConnectionRefusedError
+                                        ? "The connection was refused."
+                                        : errorStr);
+
+
+    QMessageBox::warning(0, "Error", strError);
 }
 
 void MainWindow::setMainWindowSize(TestAppView view)
@@ -149,6 +159,30 @@ void MainWindow::hidePreviuosWindows()
     }
 }
 
+void MainWindow::creareClientThread()
+{
+    qRegisterMetaType<StudentResult>("StudentResult" );
+    qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
+
+    QThread *thread = new QThread(this);
+    m_client->moveToThread(thread);
+
+    connect(this, &MainWindow::finishTestResult,            m_client,     &TcpClient::sendToServer, Qt::QueuedConnection);
+    connect(m_clientView, &ClientTabView::startConnection,  m_client,     &TcpClient::userTryConnectToHost, Qt::QueuedConnection);
+    connect(m_clientView, &ClientTabView::refuseConnection, m_client,     &TcpClient::disconnectHost, Qt::QueuedConnection);
+    connect(m_client, &TcpClient::connected, m_clientView, &ClientTabView::setClientConnectionState, Qt::QueuedConnection);
+    connect(m_client, &TcpClient::connected, m_chooseTest, &SettingsView::clientConnectionState, Qt::QueuedConnection);
+    connect(m_client, &TcpClient::serverIpChanged,   m_clientView, &ClientTabView::setIp, Qt::QueuedConnection);
+    connect(m_client, &TcpClient::serverPortChanged, m_clientView, &ClientTabView::setPort, Qt::QueuedConnection);
+    connect(m_client, &TcpClient::error,  this,   &MainWindow::slotError);
+
+    //fix thread deleting
+//    connect(this, SIGNAL(destroyed(QObject*)), thread,  SIGNAL(finished()));
+//    connect(thread,   &QThread::finished, thread, &QThread::deleteLater);
+
+    thread->start();
+}
+
 void MainWindow::calculateRresult()
 {
     qDebug() << m_studentResult.firstName
@@ -201,4 +235,10 @@ void MainWindow::addAnswerToStudentInfoVector(const AnswersVector &answer)
 {
     m_studentResult.answerInfo.append(answer);
     emit showView(TestEntryView);
+}
+
+
+void MainWindow::startServerSearch()
+{
+    emit m_clientView->startConnection("0.0.0.0", m_client->getServerPort());
 }

@@ -18,6 +18,7 @@ signals:
     void connected(int error = 0);
     void serverIpChanged(const QString &ip);
     void serverPortChanged(int port);
+    void error(QAbstractSocket::SocketError err, const QString &errorStr);
 
 public slots:
     bool connectToHost(const QString &host, int port);
@@ -39,7 +40,7 @@ private slots:
     bool pingServerInNetwork();
 
 private:
-    QTcpSocket* m_pTcpSocket;
+    QTcpSocket *m_pTcpSocket;
     quint16     m_nNextBlockSize;
     QString     m_host;
     QString     m_localHost;

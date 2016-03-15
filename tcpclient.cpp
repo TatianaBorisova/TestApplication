@@ -18,11 +18,13 @@ TcpClient::TcpClient(QObject *parent) :
     QObject(parent),
     m_pTcpSocket(new QTcpSocket(this)),
     m_nNextBlockSize(0),
+    m_host(notFoundIp),
+    m_localHost(notFoundIp),
     m_port(portNumber),
     m_connectionState(-1)
 {
-    if(!findLocalIpv4InterfaceData())
-        setServerIp(notFoundIp);
+//    if(!findLocalIpv4InterfaceData())
+//        setServerIp(notFoundIp);
 }
 
 bool TcpClient::findLocalIpv4InterfaceData()
@@ -48,7 +50,7 @@ bool TcpClient::findLocalIpv4InterfaceData()
 
 bool TcpClient::pingServerInNetwork()
 {
-    //Then find mask/broadcast
+    //Then find mask
     QList<QNetworkInterface> interface = QNetworkInterface::allInterfaces();
     for (int i = 0; i < interface.size(); i++)
     {
@@ -216,17 +218,8 @@ void TcpClient::slotReadyRead()
 
 void TcpClient::slotError(QAbstractSocket::SocketError err)
 {
-    QString strError = "Error: " + (err == QAbstractSocket::HostNotFoundError
-                                    ? "The host was not found."
-                                    : err == QAbstractSocket::RemoteHostClosedError
-                                      ? "The remote host is closed."
-                                      : err == QAbstractSocket::ConnectionRefusedError
-                                        ? "The connection was refused."
-                                        : QString(m_pTcpSocket->errorString()));
-
+    emit error(err, m_pTcpSocket->errorString());
     emit connected(m_connectionState = -1);
-
-    QMessageBox::warning(0, "Error", strError);
 }
 
 void TcpClient::sendToServer(const StudentResult &result)
