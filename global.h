@@ -10,6 +10,8 @@ const int middleHeight = 600;
 const int smallWidth = 300;
 const int smallHeight = 300;
 
+const QString cmdMsg = QString("GETFILES");
+const int cmdSize = 8;
 const int headerMsgSize = 16;
 
 typedef struct  test{

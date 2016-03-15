@@ -15,6 +15,8 @@ SettingsView::SettingsView(QWidget *parent) :
     connect(m_testPage, &TestTabView::showView, this, &SettingsView::showView);
     connect(m_testPage, &TestTabView::chosenTestDB, this, &SettingsView::chosenTestDB);
     connect(m_testPage, &TestTabView::chosenTestName, this, &SettingsView::chosenTestName);
+    connect(m_testPage, &TestTabView::tryGetTestsFromServer, this, &SettingsView::tryGetTestsFromServer);
+
     connect(this, &SettingsView::dbError, m_testPage, &TestTabView::dbError);
     connect(this, &SettingsView::readTests, m_testPage, &TestTabView::fillTestVariants);
     connect(this, &SettingsView::clientConnectionState, m_testPage, &TestTabView::setClientConnectionState);

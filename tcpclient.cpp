@@ -222,6 +222,25 @@ void TcpClient::slotError(QAbstractSocket::SocketError err)
     emit connected(m_connectionState = -1);
 }
 
+void TcpClient::sendRequestToServer()
+{
+    QString cmd = cmdMsg;
+    QByteArray bytes(cmd.toStdString().c_str());
+    //calculate msg sum
+    int msgSize = headerMsgSize + bytes.length();
+
+    //put data to bytearray
+    QByteArray  arrBlock;
+    arrBlock.fill(0, msgSize);
+    arrBlock.insert(0, QString::number(msgSize));
+    arrBlock.insert(headerMsgSize, cmd);
+    arrBlock.resize(msgSize);
+
+    //send data to server
+    qDebug() << m_pTcpSocket->write(arrBlock);
+    m_pTcpSocket->waitForBytesWritten(3000);
+}
+
 void TcpClient::sendToServer(const StudentResult &result)
 {
     //create msg string

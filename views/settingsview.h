@@ -20,6 +20,7 @@ signals:
     void readTests(const QList<TestHeaderData> &test);
     void dbError();
     void clientConnectionState(int state);
+    void tryGetTestsFromServer();
 
 protected:
     virtual void resize();

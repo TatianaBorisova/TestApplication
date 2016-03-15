@@ -19,6 +19,7 @@ signals:
     void chosenTestDB(const QString &fileName);
     void chosenTestName(const QString &fileName);
     void addPath(const QString &filePath);
+    void tryGetTestsFromServer();
 
 public slots:
     void chooseTestDb();
@@ -29,6 +30,7 @@ public slots:
     void setClientConnectionState(int state);
 
 private slots:
+    void getTestsFromServer();
     void back();
 
 private:

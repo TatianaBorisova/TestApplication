@@ -175,10 +175,11 @@ void MainWindow::creareClientThread()
     connect(m_client, &TcpClient::serverIpChanged,   m_clientView, &ClientTabView::setIp, Qt::QueuedConnection);
     connect(m_client, &TcpClient::serverPortChanged, m_clientView, &ClientTabView::setPort, Qt::QueuedConnection);
     connect(m_client, &TcpClient::error,  this,   &MainWindow::slotError);
+    connect(m_chooseTest, &SettingsView::tryGetTestsFromServer, m_client, &TcpClient::sendRequestToServer, Qt::QueuedConnection);
 
     //fix thread deleting
-//    connect(this, SIGNAL(destroyed(QObject*)), thread,  SIGNAL(finished()));
-//    connect(thread,   &QThread::finished, thread, &QThread::deleteLater);
+    //    connect(this, SIGNAL(destroyed(QObject*)), thread,  SIGNAL(finished()));
+    //    connect(thread,   &QThread::finished, thread, &QThread::deleteLater);
 
     thread->start();
 }

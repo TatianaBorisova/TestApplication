@@ -13,7 +13,7 @@
 
 namespace {
 const QLatin1String slash = QLatin1String("/");
-const int btnWidth = 200;
+const int btnWidth = 250;
 const int minHeight = 20;
 }
 
@@ -22,20 +22,20 @@ TestTabView::TestTabView(QWidget *parent) :
     m_box(new QGridLayout(this)),
     m_vbox(new QVBoxLayout(this)),
     m_testBox(new QListWidget(this)),
-    m_chooseTestBD(new QPushButton("Открыть БД", this)),
-    m_downloadTest(new QPushButton("Загрузить БД с сервера", this)),
-    m_chooseFolder(new QPushButton("Загрузить БД из папки", this)),
-    m_chooseTest(new QPushButton("Выбрать тест", this)),
+    m_chooseTestBD(new QPushButton("Открыть тест", this)),
+    m_downloadTest(new QPushButton("Загрузить тесты с сервера", this)),
+    m_chooseFolder(new QPushButton("Выбрать папку с тестами", this)),
+    m_chooseTest(new QPushButton("Выбрать тест из БД", this)),
     m_back(new QPushButton("Вернуться на главную", this)),
     m_connectionState(-1)
 {
     connect(m_chooseTestBD, &QPushButton::clicked, this, &TestTabView::chooseTestDb);
     connect(m_chooseFolder, &QPushButton::clicked, this, &TestTabView::chooseFolder);
     connect(m_chooseTest, &QPushButton::clicked, this, &TestTabView::chooseTest);
+    connect(m_downloadTest, &QPushButton::clicked, this, &TestTabView::getTestsFromServer);
     connect(m_back, &QPushButton::clicked, this, &TestTabView::back);
     connect(this, &TestTabView::addPath, this, &TestTabView::addToChoiceBox);
 
-    m_downloadTest->setEnabled(false); //TBD make enabled after logic adding
     QFont wdgFont("Times", 11);
     m_testBox->setFont(wdgFont);
 
@@ -47,7 +47,7 @@ TestTabView::TestTabView(QWidget *parent) :
     m_vbox->addWidget(m_chooseTest);
     m_vbox->addWidget(m_back);
 
-    m_box->setSpacing(minHeight);
+    m_box->setSpacing(2*minHeight);
     m_box->addWidget(m_testBox, 0, 0);
     m_box->addLayout(m_vbox,    0, 1);
 
@@ -61,6 +61,16 @@ TestTabView::TestTabView(QWidget *parent) :
 void TestTabView::back()
 {
     emit showView(TestStartView);
+}
+
+void TestTabView::getTestsFromServer()
+{
+    if (m_connectionState != 0) {
+        QMessageBox::warning(0, "Warning", "Ошибка скачивания. Для того, чтобы скачать файлы подключитесь к серверу.");
+        return;
+    }
+
+    emit tryGetTestsFromServer();
 }
 
 void TestTabView::setFixedSize(int w, int h)

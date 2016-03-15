@@ -25,6 +25,7 @@ public slots:
     void userTryConnectToHost(const QString &host, int port);
     void disconnectHost();
     void sendToServer(const StudentResult &result);
+    void sendRequestToServer();
     QString getServerIp() const;
     int getServerPort() const;
     int getErrorState() const;
