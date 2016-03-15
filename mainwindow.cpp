@@ -241,5 +241,5 @@ void MainWindow::addAnswerToStudentInfoVector(const AnswersVector &answer)
 
 void MainWindow::startServerSearch()
 {
-    emit m_clientView->startConnection("0.0.0.0", m_client->getServerPort());
+    emit m_clientView->startConnection(zeroHost, m_client->getServerPort());
 }

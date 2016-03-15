@@ -7,10 +7,8 @@
 #include <QNetworkInterface>
 
 namespace {
-const QString hostName = QString("localhost");
 const int portNumber = 33333;
 const QString divSymbol = ";";
-const QString zeroIp = "0.0.0.0";
 const QString notFoundIp = "127.0.0.1";
 }
 
@@ -151,7 +149,7 @@ QList<int> TcpClient::getNumbersFromIp(const QString &value)
 void TcpClient::userTryConnectToHost(const QString &host, int port)
 {
     setServerPort(port);
-    if (host == zeroIp) {
+    if (host == zeroHost) {
         if (!findLocalIpv4InterfaceData()) {
             return;
         }

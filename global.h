@@ -14,6 +14,8 @@ const QString cmdMsg = QString("GETFILES");
 const int cmdSize = 8;
 const int headerMsgSize = 16;
 
+const QString zeroHost = QString("0.0.0.0");
+
 typedef struct  test{
     QString question;
     QString trueAnswer;

@@ -70,6 +70,11 @@ void ClientTabView::setPort(int port)
 
 void ClientTabView::sendChosenConnectionData()
 {
+    //Check later!
+    m_connectionState->setText("Статус: Подключение...");
+    m_hostBox->setDisabled(true);
+    m_portBox->setDisabled(true);
+
     if (m_error == 0) {
         emit refuseConnection();
     } else {
@@ -79,10 +84,15 @@ void ClientTabView::sendChosenConnectionData()
 
 void ClientTabView::setDefaultConnectionData()
 {
+    //Check later!
+    m_connectionState->setText("Статус: Подключение...");
+    m_hostBox->setDisabled(true);
+    m_portBox->setDisabled(true);
+
     if (m_error == 0) {
         emit refuseConnection();
     } else {
-        emit startConnection("0.0.0.0", m_portBox->text().toInt());
+        emit startConnection(zeroHost, m_portBox->text().toInt());
     }
 }
 
