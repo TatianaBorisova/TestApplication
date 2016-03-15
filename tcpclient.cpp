@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QTime>
 #include <QNetworkInterface>
+
 namespace {
 const QString hostName = QString("localhost");
 const int portNumber = 33333;
@@ -30,13 +31,23 @@ bool TcpClient::findLocalIpv4InterfaceData()
     foreach (const QHostAddress &address, QNetworkInterface::allAddresses()) {
         if (!address.isNull() && address.protocol() == QAbstractSocket::IPv4Protocol
                 && address != QHostAddress(QHostAddress::LocalHost)) {
+
+            m_localHost = address.toString();
+
             if (connectToHost(address.toString(), m_port)) {
                 setServerIp(address.toString());
+                return true;
+
+            } else if (pingServerInNetwork()) {
                 return true;
             }
         }
     }
+    return false;
+}
 
+bool TcpClient::pingServerInNetwork()
+{
     //Then find mask/broadcast
     QList<QNetworkInterface> interface = QNetworkInterface::allInterfaces();
     for (int i = 0; i < interface.size(); i++)
@@ -46,19 +57,26 @@ bool TcpClient::findLocalIpv4InterfaceData()
 
         for (int j = 0; j < entryList.size(); j++)
         {
-            if (m_host == entryList.at(j).ip().toString()) {
+            if (m_localHost == entryList.at(j).ip().toString()) {
                 m_mask = entryList.at(j).netmask().toString();
-                //    m_broadcast = entryList.at(j).broadcast().toString();
 
                 if (m_connectionState != 0) {
 
-                    QList<int> ipList = getNumbersFromIp(m_host);
+                    QList<int> ipList = getNumbersFromIp(m_localHost);
                     QList<int> maskList = getNumbersFromIp(m_mask);
+                    QList<int> networkAddress;
+
 
                     int local = -1;
+
                     if (ipList.count() == maskList.count()) {
+
                         for (int j = 0; j < ipList.count(); j++) {
-                            if (255 != (ipList.at(j) | maskList.at(j))) {
+                            networkAddress.append((ipList.at(j) & maskList.at(j)));
+                        }
+
+                        for (int j = 0; j < ipList.count(); j++) {
+                            if (ipList.at(j) != (ipList.at(j) & maskList.at(j))) {
                                 local = j;
                                 break;
                             }
@@ -68,10 +86,10 @@ bool TcpClient::findLocalIpv4InterfaceData()
                             switch (local) {
                             case 1:
                             {
-                                for (int l = 0; l <= 255; l++) {
+                                for (int l = networkAddress.at(1); l <= 255; l++) {
                                     for (int k = 0; k <= 255; k++) {
                                         for (int n = 0; n <= 255; n++) {
-                                            QString tmpIP = QString::number(ipList.at(0)) + "." + QString::number(l) + "." + QString::number(k) + "." + QString::number(n);
+                                            QString tmpIP = QString::number(networkAddress.at(0)) + "." + QString::number(l) + "." + QString::number(k) + "." + QString::number(n);
                                             if (connectToHost(tmpIP, m_port)) {
                                                 setServerIp(tmpIP);
                                                 return true;
@@ -82,9 +100,9 @@ bool TcpClient::findLocalIpv4InterfaceData()
                             } break;
                             case 2:
                             {
-                                for (int k = 0; k <= 255; k++) {
+                                for (int k = networkAddress.at(2); k <= 255; k++) {
                                     for (int n = 0; n <= 255; n++) {
-                                        QString tmpIP = QString::number(ipList.at(0)) + "." + QString::number(ipList.at(1)) + "." + QString::number(k) + "." + QString::number(n);
+                                        QString tmpIP = QString::number(networkAddress.at(0)) + "." + QString::number(networkAddress.at(1)) + "." + QString::number(k) + "." + QString::number(n);
                                         if (connectToHost(tmpIP, m_port)) {
                                             setServerIp(tmpIP);
                                             return true;
@@ -94,8 +112,8 @@ bool TcpClient::findLocalIpv4InterfaceData()
                             } break;
                             case 3:
                             {
-                                for (int n = 0; n <= 255; n++) {
-                                    QString tmpIP = QString::number(ipList.at(0)) + "." + QString::number(ipList.at(1)) + "." + QString::number(ipList.at(2)) + "." + QString::number(n);
+                                for (int n = networkAddress.at(3); n <= 255; n++) {
+                                    QString tmpIP = QString::number(networkAddress.at(0)) + "." + QString::number(networkAddress.at(1)) + "." + QString::number(networkAddress.at(2)) + "." + QString::number(n);
                                     if (connectToHost(tmpIP, m_port)) {
                                         setServerIp(tmpIP);
                                         return true;
@@ -112,7 +130,6 @@ bool TcpClient::findLocalIpv4InterfaceData()
             }
         }
     }
-
     return false;
 }
 
@@ -135,8 +152,6 @@ void TcpClient::userTryConnectToHost(const QString &host, int port)
     if (host == zeroIp) {
         if (!findLocalIpv4InterfaceData()) {
             return;
-            //            setServerIp(notFoundIp);
-            //            setServerPort(portNumber);
         }
     } else {
         if (connectToHost(host, port)) {
@@ -149,9 +164,11 @@ bool TcpClient::connectToHost(const QString &host, int port)
 {
     m_pTcpSocket->connectToHost(host, port);
 
-    if (!m_pTcpSocket->waitForConnected(1)) {
+    if (!m_pTcpSocket->waitForConnected(10)) {
         emit connected(m_connectionState = -1);
         return false;
+    } else {
+        emit connected(m_connectionState = 0);
     }
 
     connect(m_pTcpSocket, SIGNAL(connected()), SLOT(slotConnected()));
@@ -159,7 +176,6 @@ bool TcpClient::connectToHost(const QString &host, int port)
     connect(m_pTcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
             this,         SLOT(slotError(QAbstractSocket::SocketError)));
 
-    emit connected(m_connectionState = 0);
     return true;
 }
 

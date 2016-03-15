@@ -36,11 +36,13 @@ private slots:
     QList<int> getNumbersFromIp(const QString &value);
     void setServerIp(const QString &ip);
     void setServerPort(int port);
+    bool pingServerInNetwork();
 
 private:
     QTcpSocket* m_pTcpSocket;
     quint16     m_nNextBlockSize;
     QString     m_host;
+    QString     m_localHost;
     int         m_port;
     QString     m_mask;
   //  QString     m_broadcast;
