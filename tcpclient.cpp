@@ -1,10 +1,12 @@
 #include "tcpclient.h"
+#include "fileloader/downloadmanager.h"
 
 #include <QPushButton>
 #include <QDebug>
 #include <QMessageBox>
 #include <QTime>
 #include <QNetworkInterface>
+#include <QApplication>
 
 namespace {
 const int portNumber = 33333;
@@ -19,10 +21,10 @@ TcpClient::TcpClient(QObject *parent) :
     m_host(notFoundIp),
     m_localHost(notFoundIp),
     m_port(portNumber),
-    m_connectionState(-1)
+    m_connectionState(-1),
+    m_fileManager(new DownloadManager(this))
 {
-//    if(!findLocalIpv4InterfaceData())
-//        setServerIp(notFoundIp);
+    //connect(&m_fileManager, SIGNAL(finished()), qApp, SLOT(quit()));
 }
 
 bool TcpClient::findLocalIpv4InterfaceData()
@@ -191,27 +193,74 @@ void TcpClient::disconnectHost()
 
 void TcpClient::slotReadyRead()
 {
-    QDataStream in(m_pTcpSocket);
-    in.setVersion(QDataStream::Qt_4_2);
+    while(m_pTcpSocket->bytesAvailable())
+    {
+        if (m_pTcpSocket->bytesAvailable() >= headerMsgSize) {
 
-    for (;;) {
-        if (!m_nNextBlockSize) {
-            if (m_pTcpSocket->bytesAvailable() < sizeof(quint16)) {
-                break;
+            QByteArray buffer = m_pTcpSocket->read(headerMsgSize);
+            QByteArray newarray;
+
+            for (int i = 0; i < buffer.size(); i++) {
+                if (buffer.at(i) == '\0')
+                    continue;
+
+                newarray.append(buffer.at(i));
             }
-            in >> m_nNextBlockSize;
-        }
 
-        if (m_pTcpSocket->bytesAvailable() < m_nNextBlockSize) {
-            break;
-        }
-        QTime   time;
-        QString str;
-        in >> time >> str;
+            int msgSize = QString(newarray.toStdString().c_str()).toInt();
+            buffer.clear();
+            newarray.clear();
 
-        qDebug() << time.toString() + " " + str;
-        m_nNextBlockSize = 0;
+            buffer = m_pTcpSocket->read(msgSize);
+
+            while(buffer.size() < msgSize - headerMsgSize)
+            {
+                m_pTcpSocket->waitForReadyRead(3000);
+                buffer.append(m_pTcpSocket->read(msgSize - buffer.size()));
+            }
+
+            for (int i = 0; i < buffer.size(); i++) {
+                if (buffer.at(i) == '\0')
+                    continue;
+
+                newarray.append(buffer.at(i));
+            }
+
+            QString fullMsg(newarray.toStdString().c_str());
+
+            QStringList filelist = fullMsg.split(";;");
+            QStringList urllist;
+
+            for (int i = 0; i < filelist.count(); i++) {
+                if (filelist.at(i).isEmpty())
+                    continue;
+
+                qDebug() << "777777777777" << processUrl(filelist.at(i));
+                urllist.append(processUrl(filelist.at(i)));
+            }
+
+            if (urllist.count() > 0)
+                m_fileManager->append(urllist);
+            else
+                emit fileLoadingError();
+        }
     }
+}
+
+QString TcpClient::processUrl(const QString &url)
+{
+    QString res("");
+
+    if (!url.isEmpty() && url.count() >= 4) {
+        if (url.at(0).isLetter()
+                && url.at(1) == ':') {
+            //res = url;
+           // res.remove(0, 1);
+            res = url + res;
+        }
+    }
+
+    return res;
 }
 
 void TcpClient::slotError(QAbstractSocket::SocketError err)
@@ -234,6 +283,7 @@ void TcpClient::sendRequestToServer()
     arrBlock.insert(headerMsgSize, cmd);
     arrBlock.resize(msgSize);
 
+    qDebug() << "client arr = " << arrBlock;
     //send data to server
     qDebug() << m_pTcpSocket->write(arrBlock);
     m_pTcpSocket->waitForBytesWritten(3000);

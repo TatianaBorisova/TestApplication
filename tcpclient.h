@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QTcpSocket>
 
-class QPushButton;
+class DownloadManager;
 
 class TcpClient : public QObject
 {
@@ -19,6 +19,7 @@ signals:
     void serverIpChanged(const QString &ip);
     void serverPortChanged(int port);
     void error(QAbstractSocket::SocketError err, const QString &errorStr);
+    void fileLoadingError();
 
 public slots:
     bool connectToHost(const QString &host, int port);
@@ -39,16 +40,17 @@ private slots:
     void setServerIp(const QString &ip);
     void setServerPort(int port);
     bool pingServerInNetwork();
+    QString processUrl(const QString &url);
 
 private:
-    QTcpSocket *m_pTcpSocket;
-    quint16     m_nNextBlockSize;
-    QString     m_host;
-    QString     m_localHost;
-    int         m_port;
-    QString     m_mask;
-  //  QString     m_broadcast;
-    int         m_connectionState;
+    QTcpSocket      *m_pTcpSocket;
+    quint16          m_nNextBlockSize;
+    QString          m_host;
+    QString          m_localHost;
+    int              m_port;
+    QString          m_mask;
+    int              m_connectionState;
+    DownloadManager *m_fileManager;
 };
 
 #endif // TCPCLIENT_H

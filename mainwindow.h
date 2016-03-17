@@ -27,6 +27,7 @@ public:
 public slots:
     void showTestView(TestAppView view);
     void slotError(QAbstractSocket::SocketError err, const QString &errorStr);
+    void slotFileLoadingError();
 
 signals:
     void showView(TestAppView view);

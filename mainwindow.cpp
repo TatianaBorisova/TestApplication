@@ -105,6 +105,11 @@ void MainWindow::slotError(QAbstractSocket::SocketError err, const QString &erro
     QMessageBox::warning(0, "Error", strError);
 }
 
+void MainWindow::slotFileLoadingError()
+{
+    QMessageBox::warning(0, "Error", "Тестовые файлы не найдены.");
+}
+
 void MainWindow::setMainWindowSize(TestAppView view)
 {
     int mainW = 0;
@@ -164,7 +169,7 @@ void MainWindow::creareClientThread()
     qRegisterMetaType<StudentResult>("StudentResult" );
     qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
 
-    QThread *thread = new QThread(this);
+    QThread *thread = new QThread();
     m_client->moveToThread(thread);
 
     connect(this, &MainWindow::finishTestResult,            m_client,     &TcpClient::sendToServer, Qt::QueuedConnection);
@@ -174,12 +179,13 @@ void MainWindow::creareClientThread()
     connect(m_client, &TcpClient::connected, m_chooseTest, &SettingsView::clientConnectionState, Qt::QueuedConnection);
     connect(m_client, &TcpClient::serverIpChanged,   m_clientView, &ClientTabView::setIp, Qt::QueuedConnection);
     connect(m_client, &TcpClient::serverPortChanged, m_clientView, &ClientTabView::setPort, Qt::QueuedConnection);
+    connect(m_client, &TcpClient::fileLoadingError, this,   &MainWindow::slotFileLoadingError, Qt::QueuedConnection);
     connect(m_client, &TcpClient::error,  this,   &MainWindow::slotError);
     connect(m_chooseTest, &SettingsView::tryGetTestsFromServer, m_client, &TcpClient::sendRequestToServer, Qt::QueuedConnection);
 
-    //fix thread deleting
-    //    connect(this, SIGNAL(destroyed(QObject*)), thread,  SIGNAL(finished()));
-    //    connect(thread,   &QThread::finished, thread, &QThread::deleteLater);
+    connect(qApp, SIGNAL(aboutToQuit()), thread, SLOT(quit()));
+    connect(thread,   &QThread::finished, m_client, &QThread::deleteLater);
+    connect(thread,   &QThread::finished, thread, &QThread::deleteLater);
 
     thread->start();
 }

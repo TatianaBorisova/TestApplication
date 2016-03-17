@@ -11,8 +11,7 @@ const int smallWidth = 300;
 const int smallHeight = 300;
 
 const QString cmdMsg = QString("GETFILES");
-const int cmdSize = 8;
-const int headerMsgSize = 16;
+const int headerMsgSize = 8;
 
 const QString zeroHost = QString("0.0.0.0");
 
