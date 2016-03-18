@@ -17,7 +17,7 @@ signals:
     void serverIpChanged(const QString &ip);
     void serverPortChanged(int port);
     void error(QAbstractSocket::SocketError err, const QString &errorStr);
-    void fileLoadingError();
+    void fileLoadingError(const QString &err);
     void startFileDownloading();
     void sendDownloadedFilePath(const QString &path);
 

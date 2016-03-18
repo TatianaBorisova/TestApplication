@@ -220,8 +220,13 @@ void TcpClient::slotReadyRead()
                 newarray.append(buffer.at(i));
             }
 
-            QString fullMsg(newarray.toStdString().c_str());
+            if (msgSize != (newarray.length() + headerMsgSize)) {
+                emit fileLoadingError("Данные были повреждены при скачивании. Попробуйте повторить процедуру сначала.");
+                emit startFileDownloading();
+                return;
+            }
 
+            QString fullMsg(newarray.toStdString().c_str());
             if (fullMsg.contains(newfileMsg) && fullMsg.contains(newentryMsg)) {
                 processFileSaving(newarray);
             } else {
@@ -244,7 +249,7 @@ void TcpClient::processFileList(const QString &fullMsg)
     m_filelist.clear();
 
     if (filelist.count() <= 0) {
-        emit fileLoadingError();
+        emit fileLoadingError("Тестовые файлы не найдены на сервере.");
         return;
     }
 

@@ -105,9 +105,9 @@ void MainWindow::slotError(QAbstractSocket::SocketError err, const QString &erro
     QMessageBox::warning(0, "Error", strError);
 }
 
-void MainWindow::slotFileLoadingError()
+void MainWindow::slotFileLoadingError(const QString &errMsg)
 {
-    QMessageBox::warning(0, "Error", "Тестовые файлы не найдены на сервере.");
+    QMessageBox::warning(0, "Error", errMsg);
 }
 
 void MainWindow::setMainWindowSize(TestAppView view)

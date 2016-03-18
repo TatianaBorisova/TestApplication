@@ -38,7 +38,7 @@ private slots:
     void saveTestQuestions(const TestData &testInfo);
     void updateStudentData(const StudentResult &data);
     void addAnswerToStudentInfoVector(const AnswersVector &answer);
-    void slotFileLoadingError();
+    void slotFileLoadingError(const QString &errMsg);
 
 private:
     void setMainWindowSize(TestAppView view);
