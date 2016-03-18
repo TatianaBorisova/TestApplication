@@ -28,6 +28,7 @@ public slots:
     void fillTestVariants(const QList<TestHeaderData> &test);
     void dbError();
     void setClientConnectionState(int state);
+    void addToChoiceBox(const QString &filepath);
 
 private slots:
     void getTestsFromServer();
@@ -36,8 +37,8 @@ private slots:
 private:
     bool findDumlicateFile(QListWidget *itemBox, const QString &fileName);
     void fillChoiceBox(QString folderPath);
-    void addToChoiceBox(const QString &filepath);
     void checkConnectionState();
+    bool checkIfTestDb(const QString &filename);
 
 protected:
     virtual void resize();

@@ -210,7 +210,6 @@ void TcpClient::slotReadyRead()
             newarray.clear();
 
             buffer = m_pTcpSocket->read(msgSize);
-
             while(buffer.size() < msgSize - headerMsgSize)
             {
                 m_pTcpSocket->waitForReadyRead(3000);
@@ -222,7 +221,6 @@ void TcpClient::slotReadyRead()
             }
 
             QString fullMsg(newarray.toStdString().c_str());
-            qDebug() << "newarray msg" << newarray << m_pTcpSocket->bytesAvailable();
 
             if (fullMsg.contains(newfileMsg) && fullMsg.contains(newentryMsg)) {
                 processFileSaving(newarray);
@@ -235,7 +233,6 @@ void TcpClient::slotReadyRead()
 
 void TcpClient::getDataFileByFile()
 {
-    qDebug() << "getDataFileByFile";
     if (m_filelist.count() > 0) {
         sendDownLoadFileRequest(m_filelist.takeFirst());
     }
@@ -252,37 +249,32 @@ void TcpClient::processFileList(const QString &fullMsg)
     }
 
     for (int i = 0; i < filelist.count(); i++) {
-        qDebug() << "processFileList111111" << filelist.at(i);
-
         if (filelist.at(i).isEmpty())
             continue;
 
         m_filelist.append(filelist.at(i));
     }
 
-    qDebug() << "processFileList";
     emit startFileDownloading();
 }
 
 void TcpClient::processFileSaving(const QByteArray &fullMsg)
 {
-    qDebug() << "processFileSaving!!";
-
     QString msgStr(fullMsg.toStdString().c_str());
 
     int nameindx = msgStr.indexOf(newfileMsg);
     int entryindx = msgStr.indexOf(newentryMsg);
 
     QString filename = msgStr.mid(nameindx + newfileMsg.length(), entryindx - (nameindx + newfileMsg.length()));
-    qDebug() << "processFileSaving filename - " << filename;
-
     QFile file(QDir::currentPath() + QDir::separator() + filename);
+
     if (file.open(QIODevice::WriteOnly)) {
-        QTextStream stream(&file);
-        stream << fullMsg.right(fullMsg.count() - (entryindx + newentryMsg.length())); //QByteArray(fullMsg.right(fullMsg.count() - (entryindx + newentryMsg.length())).toStdString().c_str());
+        QByteArray filedata = fullMsg.right(fullMsg.length() - (entryindx + newentryMsg.length()));
+        file.write(filedata); //Stream work incorrectly in this case
+        file.close();
+        emit sendDownloadedFilePath(QDir::currentPath());
     }
 
-    file.close();
     emit startFileDownloading();
 }
 

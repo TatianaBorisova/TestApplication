@@ -19,6 +19,7 @@ signals:
     void error(QAbstractSocket::SocketError err, const QString &errorStr);
     void fileLoadingError();
     void startFileDownloading();
+    void sendDownloadedFilePath(const QString &path);
 
 public slots:
     bool connectToHost(const QString &host, int port);

@@ -180,8 +180,9 @@ void MainWindow::creareClientThread()
     connect(m_client, &TcpClient::serverIpChanged,   m_clientView, &ClientTabView::setIp, Qt::QueuedConnection);
     connect(m_client, &TcpClient::serverPortChanged, m_clientView, &ClientTabView::setPort, Qt::QueuedConnection);
     connect(m_client, &TcpClient::fileLoadingError, this,   &MainWindow::slotFileLoadingError, Qt::QueuedConnection);
-    connect(m_client, &TcpClient::error,    this,   &MainWindow::slotError);
-    connect(m_chooseTest, &SettingsView::tryGetTestsFromServer, m_client, &TcpClient::sendFilesGettingRequest, Qt::QueuedConnection);
+    connect(m_client, &TcpClient::error,            this,   &MainWindow::slotError);
+    connect(m_chooseTest, &SettingsView::tryGetTestsFromServer, m_client,     &TcpClient::sendFilesGettingRequest, Qt::QueuedConnection);
+    connect(m_client,     &TcpClient::sendDownloadedFilePath,   m_chooseTest, &SettingsView::sendDownloadedFilePath, Qt::QueuedConnection);
 
     connect(qApp, SIGNAL(aboutToQuit()), thread, SLOT(quit()));
     connect(thread,   &QThread::finished, m_client, &QThread::deleteLater);

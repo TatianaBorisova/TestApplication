@@ -21,6 +21,7 @@ signals:
     void dbError();
     void clientConnectionState(int state);
     void tryGetTestsFromServer();
+    void sendDownloadedFilePath(const QString &path);
 
 protected:
     virtual void resize();

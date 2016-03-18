@@ -10,6 +10,7 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QDebug>
+#include <QSqlDatabase>
 
 namespace {
 const QLatin1String slash = QLatin1String("/");
@@ -175,7 +176,8 @@ void TestTabView::addToChoiceBox(const QString &filepath)
         QStringList allFiles = chosenDir.entryList(QDir::Files | QDir::NoDotAndDotDot);
 
         for (int i = 0; i < allFiles.count(); i++) {
-            if (!findDumlicateFile(m_testBox, allFiles.at(i))) {
+            if (!findDumlicateFile(m_testBox, allFiles.at(i))
+                    && checkIfTestDb(allFiles.at(i))) {
 
                 QListWidgetItem *newItem = new QListWidgetItem();
 
@@ -213,7 +215,8 @@ void TestTabView::fillChoiceBox(QString folderPath)
 
             for (int i = 0; i < filesList.count(); i++) {
 
-                if (!findDumlicateFile(m_testBox, filesList.at(i))) {
+                if (!findDumlicateFile(m_testBox, filesList.at(i))
+                        && checkIfTestDb(filesList.at(i))) {
 
                     QListWidgetItem *newItem = new QListWidgetItem();
 
@@ -223,4 +226,30 @@ void TestTabView::fillChoiceBox(QString folderPath)
             }
         }
     }
+}
+
+bool TestTabView::checkIfTestDb(const QString &filename)
+{
+    QFile file(filename);
+    if (file.open(QIODevice::ReadOnly)) {
+        file.seek(0);
+
+        QByteArray bytes = file.read(16);
+        if (QString(bytes.data()).contains("SQLite format")) {
+
+            QSqlDatabase dbPtr = QSqlDatabase::addDatabase("QSQLITE");
+            dbPtr.setDatabaseName(filename);
+            if (!dbPtr.open()) {
+                QMessageBox::critical(0, "Can not open database", "Не могу открыть базу данных.\n");
+                return false;
+            }
+            if (dbPtr.tables().contains(QLatin1String("testdata"))
+                    && dbPtr.tables().contains(QLatin1String("questionsdata"))) {
+                return true;
+            }
+
+            dbPtr.close();
+        }
+    }
+    return false;
 }
