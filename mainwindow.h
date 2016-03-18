@@ -14,6 +14,7 @@ class TestView;
 class ResultView;
 class ClientTabView;
 class TcpClient;
+class DownloadManager;
 
 class MainWindow : public QWidget
 {
@@ -27,7 +28,6 @@ public:
 public slots:
     void showTestView(TestAppView view);
     void slotError(QAbstractSocket::SocketError err, const QString &errorStr);
-    void slotFileLoadingError();
 
 signals:
     void showView(TestAppView view);
@@ -38,6 +38,7 @@ private slots:
     void saveTestQuestions(const TestData &testInfo);
     void updateStudentData(const StudentResult &data);
     void addAnswerToStudentInfoVector(const AnswersVector &answer);
+    void slotFileLoadingError();
 
 private:
     void setMainWindowSize(TestAppView view);

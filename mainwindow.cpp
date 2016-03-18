@@ -107,7 +107,7 @@ void MainWindow::slotError(QAbstractSocket::SocketError err, const QString &erro
 
 void MainWindow::slotFileLoadingError()
 {
-    QMessageBox::warning(0, "Error", "Тестовые файлы не найдены.");
+    QMessageBox::warning(0, "Error", "Тестовые файлы не найдены на сервере.");
 }
 
 void MainWindow::setMainWindowSize(TestAppView view)
@@ -172,16 +172,16 @@ void MainWindow::creareClientThread()
     QThread *thread = new QThread();
     m_client->moveToThread(thread);
 
-    connect(this, &MainWindow::finishTestResult,            m_client,     &TcpClient::sendToServer, Qt::QueuedConnection);
-    connect(m_clientView, &ClientTabView::startConnection,  m_client,     &TcpClient::userTryConnectToHost, Qt::QueuedConnection);
+    connect(this, &MainWindow::finishTestResult,            m_client,     &TcpClient::sendTestResultToServer, Qt::QueuedConnection);
+    connect(m_clientView, &ClientTabView::startConnection,  m_client,     &TcpClient::tryConnectToHost, Qt::QueuedConnection);
     connect(m_clientView, &ClientTabView::refuseConnection, m_client,     &TcpClient::disconnectHost, Qt::QueuedConnection);
     connect(m_client, &TcpClient::connected, m_clientView, &ClientTabView::setClientConnectionState, Qt::QueuedConnection);
     connect(m_client, &TcpClient::connected, m_chooseTest, &SettingsView::clientConnectionState, Qt::QueuedConnection);
     connect(m_client, &TcpClient::serverIpChanged,   m_clientView, &ClientTabView::setIp, Qt::QueuedConnection);
     connect(m_client, &TcpClient::serverPortChanged, m_clientView, &ClientTabView::setPort, Qt::QueuedConnection);
     connect(m_client, &TcpClient::fileLoadingError, this,   &MainWindow::slotFileLoadingError, Qt::QueuedConnection);
-    connect(m_client, &TcpClient::error,  this,   &MainWindow::slotError);
-    connect(m_chooseTest, &SettingsView::tryGetTestsFromServer, m_client, &TcpClient::sendRequestToServer, Qt::QueuedConnection);
+    connect(m_client, &TcpClient::error,    this,   &MainWindow::slotError);
+    connect(m_chooseTest, &SettingsView::tryGetTestsFromServer, m_client, &TcpClient::sendFilesGettingRequest, Qt::QueuedConnection);
 
     connect(qApp, SIGNAL(aboutToQuit()), thread, SLOT(quit()));
     connect(thread,   &QThread::finished, m_client, &QThread::deleteLater);

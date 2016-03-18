@@ -27,9 +27,7 @@ SOURCES += main.cpp \
     views/settingsview.cpp \
     views/testtabview.cpp \
     views/clienttabview.cpp \
-    views/custombutton.cpp \
-    fileloader/downloadmanager.cpp \
-    fileloader/textprogressbar.cpp
+    views/custombutton.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -47,9 +45,7 @@ HEADERS  += \
     views/settingsview.h \
     views/testtabview.h \
     views/clienttabview.h \
-    views/custombutton.h \
-    fileloader/downloadmanager.h \
-    fileloader/textprogressbar.h
+    views/custombutton.h
 
 RESOURCES += \
     resources.qrc

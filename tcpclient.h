@@ -6,8 +6,6 @@
 #include <QObject>
 #include <QTcpSocket>
 
-class DownloadManager;
-
 class TcpClient : public QObject
 {
     Q_OBJECT
@@ -20,13 +18,17 @@ signals:
     void serverPortChanged(int port);
     void error(QAbstractSocket::SocketError err, const QString &errorStr);
     void fileLoadingError();
+    void startFileDownloading();
 
 public slots:
     bool connectToHost(const QString &host, int port);
-    void userTryConnectToHost(const QString &host, int port);
+    void tryConnectToHost(const QString &host, int port);
     void disconnectHost();
-    void sendToServer(const StudentResult &result);
-    void sendRequestToServer();
+
+    void sendTestResultToServer(const StudentResult &result);
+    void sendFilesGettingRequest();
+    void sendDownLoadFileRequest(const QString &filename);
+
     QString getServerIp() const;
     int getServerPort() const;
     int getErrorState() const;
@@ -36,13 +38,16 @@ private slots:
     void slotError(QAbstractSocket::SocketError);
     void slotConnected();
     bool findLocalIpv4InterfaceData();
-    QList<int> getNumbersFromIp(const QString &value);
+    QList<int> convertIpToInt(const QString &value);
     void setServerIp(const QString &ip);
     void setServerPort(int port);
-    bool pingServerInNetwork();
-    QString processUrl(const QString &url);
+    bool serachServerInNetwork();
+    void getDataFileByFile();
+    void processFileList(const QString &fullMsg);
+    void processFileSaving(const QByteArray &fullMsg);
 
 private:
+    //TCP client and connection
     QTcpSocket      *m_pTcpSocket;
     quint16          m_nNextBlockSize;
     QString          m_host;
@@ -50,7 +55,7 @@ private:
     int              m_port;
     QString          m_mask;
     int              m_connectionState;
-    DownloadManager *m_fileManager;
+    QStringList      m_filelist;
 };
 
 #endif // TCPCLIENT_H
