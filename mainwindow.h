@@ -59,6 +59,7 @@ private:
     ResultView      *m_resultView;
     ClientTabView   *m_clientView;
     TcpClient       *m_client;
+    QList<int>       m_questionsWeight;
 };
 
 #endif // MAINWINDOW_H

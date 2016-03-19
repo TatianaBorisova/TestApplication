@@ -139,7 +139,7 @@ bool MainWindow::setTestData()
     }
 
     if (m_testList.questions.count() > 1) {
-        int testNumber = RandomGenerator::getValueInInterval(m_testList.questions.count());
+        int testNumber  = RandomGenerator::getValueInInterval(m_testList.questions.count());
         m_testView->setTestData(m_testList.questions.takeAt(testNumber));
     } else if (m_testList.questions.count() == 1) {
         m_testView->setTestData(m_testList.questions.takeLast());
@@ -199,10 +199,10 @@ void MainWindow::calculateRresult()
              << m_studentResult.group;
 
     int score = 0;
-    //calculate score
+    //calculate real score
     for (int i = 0; i < m_studentResult.answerInfo.count(); i++) {
         if (m_studentResult.answerInfo.at(i).isCorrectAnswer) {
-            score++;
+            score += m_questionsWeight.at(i);
             if (m_studentResult.answerInfo.at(i).assurance)
                 score++;
         }
@@ -210,8 +210,13 @@ void MainWindow::calculateRresult()
 
     m_studentResult.testName = m_testList.testName;
     m_studentResult.score = score;
-    m_studentResult.maxPosibleScore = m_studentResult.answerInfo.count()*2; //double questions count
 
+    m_studentResult.maxPosibleScore = 0;
+    //calculate MAX possible score
+    for (int i = 0; i < m_studentResult.answerInfo.count(); i++) {
+        m_studentResult.maxPosibleScore += m_questionsWeight.at(i);
+        m_studentResult.maxPosibleScore++;
+    }
     qDebug() << "m_studentResult.testName = " << m_studentResult.testName;
     qDebug() << "score" << m_studentResult.score << "max possible score " << m_studentResult.maxPosibleScore;
 }
@@ -226,6 +231,11 @@ void MainWindow::saveTestQuestions(const TestData &testInfo)
     m_testList.questions.clear();
 
     m_testList = testInfo;
+    m_questionsWeight.clear();
+
+    for (int i = 0; i < m_testList.questions.count(); i++) {
+        m_questionsWeight.append(m_testList.questions.at(i).weight);
+    }
 
     emit showView(TestStudentInfoView);
 }
