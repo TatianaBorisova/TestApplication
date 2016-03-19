@@ -51,10 +51,10 @@ void TestFileReader::readTestFile(const QString &fileName)
             QJsonObject obj = value.toObject();
             TestStructure testLines;
 
-            testLines.question    = StringEncryption::stringDecrypt(obj["TestQuestion"].toString(), "test");
-            testLines.trueAnswer  = StringEncryption::stringDecrypt(obj["CorrectTestAnswer"].toString(), "test");
-            testLines.falseAnswer = StringEncryption::stringDecrypt(obj["TestAnswers"].toString(), "test");
-            testLines.imgPath     = StringEncryption::stringDecrypt(obj["ImgPath"].toString(), "test");
+            testLines.question    = StringEncryption::stringDecrypt(obj["TestQuestion"].toString(), encryptKey);
+            testLines.trueAnswer  = StringEncryption::stringDecrypt(obj["CorrectTestAnswer"].toString(), encryptKey);
+            testLines.falseAnswer = StringEncryption::stringDecrypt(obj["TestAnswers"].toString(), encryptKey);
+            testLines.imgPath     = StringEncryption::stringDecrypt(obj["ImgPath"].toString(), encryptKey);
 
             testData << testLines;
         }
@@ -130,10 +130,10 @@ void TestFileReader::readTestFromDb(const QString &testName)
     if (q_questions.exec()) {
         while (q_questions.next()) {
             TestQuestions question;
-            question.question = q_questions.value(q_questions.record().indexOf("question")).toString();
+            question.question = StringEncryption::stringDecrypt(q_questions.value(q_questions.record().indexOf("question")).toString(), encryptKey);
             question.weight = q_questions.value(q_questions.record().indexOf("testweight")).toInt();
-            question.answers.correctAnswer = q_questions.value(q_questions.record().indexOf("correctanswer")).toString();
-            question.answers.uncorrectAnswers = q_questions.value(q_questions.record().indexOf("uncorrectanswers")).toString();
+            question.answers.correctAnswer = StringEncryption::stringDecrypt(q_questions.value(q_questions.record().indexOf("correctanswer")).toString(), encryptKey);
+            question.answers.uncorrectAnswers = StringEncryption::stringDecrypt(q_questions.value(q_questions.record().indexOf("uncorrectanswers")).toString(), encryptKey);
             question.answers.imgName = q_questions.value(q_questions.record().indexOf("imgname")).toString();
             question.answers.image = q_questions.value(q_questions.record().indexOf("image")).toByteArray();
             data.questions.append(question);

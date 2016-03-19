@@ -16,6 +16,9 @@ const QString newfileMsg = QString("NEWFILENAME");
 const QString newentryMsg = QString("NEWFILEENTRY");
 const int headerMsgSize = 16;
 
+//encryption
+const QString encryptKey = QString("test");
+
 const QString zeroHost = QString("0.0.0.0");
 
 typedef struct  test{

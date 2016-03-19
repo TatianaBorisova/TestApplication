@@ -94,11 +94,11 @@ void MainWindow::showTestView(TestAppView view)
 void MainWindow::slotError(QAbstractSocket::SocketError err, const QString &errorStr)
 {
     QString strError = "Error: " + (err == QAbstractSocket::HostNotFoundError
-                                    ? "The host was not found."
+                                    ? "Сервер не найден."
                                     : err == QAbstractSocket::RemoteHostClosedError
-                                      ? "The remote host is closed."
+                                      ? "Соединение с сервером закрыто."
                                       : err == QAbstractSocket::ConnectionRefusedError
-                                        ? "The connection was refused."
+                                        ? "Соединение прервано."
                                         : errorStr);
 
 
