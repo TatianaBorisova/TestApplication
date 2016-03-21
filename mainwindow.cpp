@@ -16,6 +16,7 @@
 #include <QDebug>
 #include <QThread>
 #include <QMessageBox>
+#include <QIcon>
 
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent),
@@ -38,6 +39,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_clientView->setClientConnectionState(m_client->getErrorState());
     m_clientView->setIp(m_client->getServerIp());
     m_clientView->setPort(m_client->getServerPort());
+
+    QIcon icon(":res/test.png");
+    setWindowIcon(icon);
 
     //view connects
     connect(m_chooseTest, &SettingsView::chosenTestDB,   m_fileReader, &TestFileReader::readAllTestsFromDb);

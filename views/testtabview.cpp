@@ -119,6 +119,7 @@ void TestTabView::chooseFolder()
 {
     checkConnectionState();
     QString filePath = QFileDialog::getExistingDirectory(this, tr("Open Directory"));
+    qDebug() << "chooseFolder" << filePath;
     emit addPath(filePath);
     m_chooseTest->setEnabled(false);
     m_chooseTestBD->setEnabled(true);
@@ -129,11 +130,13 @@ void TestTabView::chooseTest()
     checkConnectionState();
     if (m_testBox->count() > 0) {
         QListWidgetItem *item = m_testBox->currentItem();
-        if (item)
+        if (item) {
             emit chosenTestName(item->text());
-        else
+            m_chooseTest->setEnabled(false);
+            m_chooseTestBD->setEnabled(true);
+        } else {
             QMessageBox::warning(0, "Error", "Выберите тест из списка.");
-
+        }
     }
 }
 
@@ -176,8 +179,9 @@ void TestTabView::addToChoiceBox(const QString &filepath)
         QStringList allFiles = chosenDir.entryList(QDir::Files | QDir::NoDotAndDotDot);
 
         for (int i = 0; i < allFiles.count(); i++) {
+
             if (!findDumlicateFile(m_testBox, allFiles.at(i))
-                    && checkIfTestDb(allFiles.at(i))) {
+                    && checkIfTestDb(file + allFiles.at(i))) {
 
                 QListWidgetItem *newItem = new QListWidgetItem();
 
@@ -199,16 +203,17 @@ bool TestTabView::findDumlicateFile(QListWidget *itemBox, const QString &fileNam
     return false;
 }
 
-void TestTabView::fillChoiceBox(QString folderPath)
+void TestTabView::fillChoiceBox(const QString &folderPath)
 {
-    if (!folderPath.isEmpty()) {
+    QString tmpFolderStr = folderPath;
+    if (!tmpFolderStr.isEmpty()) {
 
-        if (folderPath.at(folderPath.count() - 1) != '/')
-            folderPath = folderPath + slash;
+        if (tmpFolderStr.at(tmpFolderStr.count() - 1) != '/')
+            tmpFolderStr = tmpFolderStr + slash;
 
         m_testBox->clear();
 
-        QDir entryDir(folderPath);
+        QDir entryDir(tmpFolderStr);
         if (entryDir.exists()) {
 
             QStringList filesList = entryDir.entryList(QDir::Files | QDir::NoDotAndDotDot);
@@ -216,11 +221,11 @@ void TestTabView::fillChoiceBox(QString folderPath)
             for (int i = 0; i < filesList.count(); i++) {
 
                 if (!findDumlicateFile(m_testBox, filesList.at(i))
-                        && checkIfTestDb(filesList.at(i))) {
+                        && checkIfTestDb(tmpFolderStr + filesList.at(i))) {
 
                     QListWidgetItem *newItem = new QListWidgetItem();
 
-                    newItem->setText(folderPath + filesList.at(i));
+                    newItem->setText(tmpFolderStr + filesList.at(i));
                     m_testBox->insertItem(m_testBox->count(), newItem);
                 }
             }
@@ -243,6 +248,7 @@ bool TestTabView::checkIfTestDb(const QString &filename)
                 QMessageBox::critical(0, "Can not open database", "Не могу открыть базу данных.\n");
                 return false;
             }
+
             if (dbPtr.tables().contains(QLatin1String("testdata"))
                     && dbPtr.tables().contains(QLatin1String("questionsdata"))) {
                 return true;

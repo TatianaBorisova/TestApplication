@@ -36,7 +36,7 @@ private slots:
 
 private:
     bool findDumlicateFile(QListWidget *itemBox, const QString &fileName);
-    void fillChoiceBox(QString folderPath);
+    void fillChoiceBox(const QString &folderPath);
     void checkConnectionState();
     bool checkIfTestDb(const QString &filename);
 
