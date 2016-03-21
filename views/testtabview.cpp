@@ -23,10 +23,10 @@ TestTabView::TestTabView(QWidget *parent) :
     m_box(new QGridLayout(this)),
     m_vbox(new QVBoxLayout(this)),
     m_testBox(new QListWidget(this)),
-    m_chooseTestBD(new QPushButton("Открыть тест", this)),
+    m_chooseTestBD(new QPushButton("Открыть тестовую базу", this)),
     m_downloadTest(new QPushButton("Загрузить тесты с сервера", this)),
-    m_chooseFolder(new QPushButton("Выбрать папку с тестами", this)),
-    m_chooseTest(new QPushButton("Выбрать тест из БД", this)),
+    m_chooseFolder(new QPushButton("Выбрать папку с тест-базами", this)),
+    m_chooseTest(new QPushButton("Выбрать тест из базы", this)),
     m_back(new QPushButton("Вернуться на главную", this)),
     m_connectionState(-1)
 {

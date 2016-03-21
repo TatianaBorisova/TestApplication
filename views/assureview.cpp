@@ -23,7 +23,7 @@ AssureView::AssureView(QWidget *parent) :
     connect(m_yesBtn, &QPushButton::clicked, this, &AssureView::hide);
     connect(m_noBtn, &QPushButton::clicked, this, &AssureView::hide);
 
-    m_assure->setText("Вы уверенны в своем ответе?");
+    m_assure->setText("Вы уверены в своем ответе?");
     m_assure->setAlignment(Qt::AlignHCenter);
 
     m_yesBtn->setText("Да");
