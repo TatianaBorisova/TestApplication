@@ -1,16 +1,17 @@
-#ifndef SETTINGSTABVIEW_H
-#define SETTINGSTABVIEW_H
+#ifndef SETTINGSVIEW_H
+#define SETTINGSVIEW_H
 
 #include "testbaseview.h"
 
 class QTabWidget;
 class ClientTabView;
+class SavingSettingsTabView;
 
-class SettingsTabView : public TestBaseView
+class SettingsView : public TestBaseView
 {
     Q_OBJECT
 public:
-    explicit SettingsTabView(QWidget *parent = 0);
+    explicit SettingsView(QWidget *parent = 0);
 
 signals:
     void startConnection(const QString &ip, int port);
@@ -25,8 +26,9 @@ protected:
     virtual void resize();
 
 private:
-    QTabWidget    *m_tab;
-    ClientTabView *m_netwotkView;
+    QTabWidget            *m_tab;
+    ClientTabView         *m_netwotkView;
+    SavingSettingsTabView *m_saveView;
 };
 
-#endif // SETTINGSTABVIEW_H
+#endif // SETTINGSVIEW_H

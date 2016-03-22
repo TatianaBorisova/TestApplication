@@ -1,25 +1,27 @@
-#include "settingstabview.h"
+#include "settingsview.h"
 #include "clienttabview.h"
+#include "savingsettingstabview.h"
 
 #include <QTabWidget>
 #include <QVBoxLayout>
 
-SettingsTabView::SettingsTabView(QWidget *parent) :
+SettingsView::SettingsView(QWidget *parent) :
     TestBaseView(parent),
     m_tab(new QTabWidget(this)),
-    m_netwotkView(new ClientTabView(this))
+    m_netwotkView(new ClientTabView(this)),
+    m_saveView(new SavingSettingsTabView(this))
 {
-    connect(m_netwotkView, &ClientTabView::showView, this, &SettingsTabView::showView);
+    connect(m_netwotkView, &ClientTabView::showView, this, &SettingsView::showView);
 
     QVBoxLayout *vbox = new QVBoxLayout();
     m_tab->addTab(m_netwotkView, "Сетевое подключение");
+    m_tab->addTab(m_saveView, "Настройки сохранения");
 
     vbox->addWidget(m_tab);
-
     setLayout(vbox);
 }
 
-void SettingsTabView::resize()
+void SettingsView::resize()
 {
     QWidget *wParent = dynamic_cast<QWidget *>(parent());
     if (wParent)
@@ -28,17 +30,17 @@ void SettingsTabView::resize()
     m_tab->setFixedSize(width()*0.98, height()*0.95);
 }
 
-void SettingsTabView::setClientConnectionState(int error)
+void SettingsView::setClientConnectionState(int error)
 {
     m_netwotkView->setClientConnectionState(error);
 }
 
-void SettingsTabView::setIp(const QString &ip)
+void SettingsView::setIp(const QString &ip)
 {
     m_netwotkView->setIp(ip);
 }
 
-void SettingsTabView::setPort(int port)
+void SettingsView::setPort(int port)
 {
     m_netwotkView->setPort(port);
 }

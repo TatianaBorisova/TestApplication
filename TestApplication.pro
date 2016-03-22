@@ -27,8 +27,9 @@ SOURCES += main.cpp \
     views/testtabview.cpp \
     views/clienttabview.cpp \
     views/custombutton.cpp \
-    views/settingstabview.cpp \
-    views/maintesttabview.cpp
+    views/maintestview.cpp \
+    views/settingsview.cpp \
+    views/savingsettingstabview.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -46,8 +47,9 @@ HEADERS  += \
     views/testtabview.h \
     views/clienttabview.h \
     views/custombutton.h \
-    views/settingstabview.h \
-    views/maintesttabview.h
+    views/maintestview.h \
+    views/settingsview.h \
+    views/savingsettingstabview.h
 
 RESOURCES += \
     resources.qrc

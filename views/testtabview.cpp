@@ -1,5 +1,5 @@
 #include "testtabview.h"
-#include "maintesttabview.h"
+#include "maintestview.h"
 
 #include <QListWidget>
 #include <QPushButton>

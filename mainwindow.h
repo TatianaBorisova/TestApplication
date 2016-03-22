@@ -7,12 +7,12 @@
 #include "global.h"
 
 class StartView;
-class MainTestTabView;
+class MainTestView;
 class TestFileReader;
 class StudentInfoView;
 class TestView;
 class ResultView;
-class SettingsTabView;
+class SettingsView;
 class TcpClient;
 class DownloadManager;
 
@@ -50,14 +50,14 @@ private:
 
 private:
     StartView       *m_startWnd;
-    MainTestTabView    *m_chooseTest;
+    MainTestView    *m_chooseTest;
     StudentInfoView *m_studentData;
     TestFileReader  *m_fileReader;
     TestData         m_testList;
     StudentResult    m_studentResult;
     TestView        *m_testView;
     ResultView      *m_resultView;
-    SettingsTabView *m_settingsView;
+    SettingsView *m_settingsView;
     TcpClient       *m_client;
     QList<int>       m_questionsWeight;
 };

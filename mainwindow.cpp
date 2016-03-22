@@ -1,9 +1,9 @@
 #include "views/startview.h"
-#include "views/maintesttabview.h"
+#include "views/maintestview.h"
 #include "views/studentinfoview.h"
 #include "views/testview.h"
 #include "views/resultview.h"
-#include "views/settingstabview.h"
+#include "views/settingsview.h"
 
 #include "testfilereader.h"
 #include "randomgenerator.h"
@@ -21,12 +21,12 @@
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent),
     m_startWnd(new StartView(this)),
-    m_chooseTest(new MainTestTabView(this)),
+    m_chooseTest(new MainTestView(this)),
     m_studentData(new StudentInfoView(this)),
     m_fileReader(new TestFileReader(this)),
     m_testView(new TestView(this)),
     m_resultView(new ResultView(this)),
-    m_settingsView(new SettingsTabView(this)),
+    m_settingsView(new SettingsView(this)),
     m_client(new TcpClient())
 {
     hidePreviuosWindows();
@@ -44,16 +44,16 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowIcon(icon);
 
     //view connects
-    connect(m_chooseTest, &MainTestTabView::chosenTestDB,   m_fileReader, &TestFileReader::readAllTestsFromDb);
-    connect(m_fileReader, &TestFileReader::dbError,      m_chooseTest, &MainTestTabView::dbError);
-    connect(m_chooseTest, &MainTestTabView::chosenTestName, m_fileReader, &TestFileReader::readTestFromDb);
-    connect(m_fileReader, &TestFileReader::readTests,    m_chooseTest, &MainTestTabView::readTests);
+    connect(m_chooseTest, &MainTestView::chosenTestDB,   m_fileReader, &TestFileReader::readAllTestsFromDb);
+    connect(m_fileReader, &TestFileReader::dbError,      m_chooseTest, &MainTestView::dbError);
+    connect(m_chooseTest, &MainTestView::chosenTestName, m_fileReader, &TestFileReader::readTestFromDb);
+    connect(m_fileReader, &TestFileReader::readTests,    m_chooseTest, &MainTestView::readTests);
     connect(m_fileReader, &TestFileReader::sendFullTestData, this,     &MainWindow::saveTestQuestions);
 
     connect(m_startWnd,   &StartView::showView,     this, &MainWindow::showTestView);
     connect(this,         &MainWindow::showView,    this, &MainWindow::showTestView);
-    connect(m_chooseTest, &MainTestTabView::showView,  this, &MainWindow::showTestView);
-    connect(m_settingsView, &SettingsTabView::showView, this, &MainWindow::showTestView);
+    connect(m_chooseTest, &MainTestView::showView,  this, &MainWindow::showTestView);
+    connect(m_settingsView, &SettingsView::showView, this, &MainWindow::showTestView);
     connect(m_resultView, &ResultView::showView,    this, &MainWindow::showTestView);
 
     connect(m_testView, &TestView::answeredResult,     this, &MainWindow::addAnswerToStudentInfoVector);
@@ -177,16 +177,16 @@ void MainWindow::creareClientThread()
     m_client->moveToThread(thread);
 
     connect(this, &MainWindow::finishTestResult,            m_client,     &TcpClient::sendTestResultToServer, Qt::QueuedConnection);
-    connect(m_settingsView, &SettingsTabView::startConnection,  m_client,     &TcpClient::tryConnectToHost, Qt::QueuedConnection);
-    connect(m_settingsView, &SettingsTabView::refuseConnection, m_client,     &TcpClient::disconnectHost, Qt::QueuedConnection);
-    connect(m_client, &TcpClient::connected, m_settingsView, &SettingsTabView::setClientConnectionState, Qt::QueuedConnection);
-    connect(m_client, &TcpClient::connected, m_chooseTest,   &MainTestTabView::clientConnectionState, Qt::QueuedConnection);
-    connect(m_client, &TcpClient::serverIpChanged,   m_settingsView, &SettingsTabView::setIp, Qt::QueuedConnection);
-    connect(m_client, &TcpClient::serverPortChanged, m_settingsView, &SettingsTabView::setPort, Qt::QueuedConnection);
+    connect(m_settingsView, &SettingsView::startConnection,  m_client,     &TcpClient::tryConnectToHost, Qt::QueuedConnection);
+    connect(m_settingsView, &SettingsView::refuseConnection, m_client,     &TcpClient::disconnectHost, Qt::QueuedConnection);
+    connect(m_client, &TcpClient::connected, m_settingsView, &SettingsView::setClientConnectionState, Qt::QueuedConnection);
+    connect(m_client, &TcpClient::connected, m_chooseTest,   &MainTestView::clientConnectionState, Qt::QueuedConnection);
+    connect(m_client, &TcpClient::serverIpChanged,   m_settingsView, &SettingsView::setIp, Qt::QueuedConnection);
+    connect(m_client, &TcpClient::serverPortChanged, m_settingsView, &SettingsView::setPort, Qt::QueuedConnection);
     connect(m_client, &TcpClient::fileLoadingError, this,   &MainWindow::slotFileLoadingError, Qt::QueuedConnection);
     connect(m_client, &TcpClient::error,            this,   &MainWindow::slotError);
-    connect(m_chooseTest, &MainTestTabView::tryGetTestsFromServer, m_client,     &TcpClient::sendFilesGettingRequest, Qt::QueuedConnection);
-    connect(m_client,     &TcpClient::sendDownloadedFilePath,   m_chooseTest, &MainTestTabView::sendDownloadedFilePath, Qt::QueuedConnection);
+    connect(m_chooseTest, &MainTestView::tryGetTestsFromServer, m_client,     &TcpClient::sendFilesGettingRequest, Qt::QueuedConnection);
+    connect(m_client,     &TcpClient::sendDownloadedFilePath,   m_chooseTest, &MainTestView::sendDownloadedFilePath, Qt::QueuedConnection);
 
     connect(qApp, SIGNAL(aboutToQuit()), thread, SLOT(quit()));
     connect(thread,   &QThread::finished, m_client, &QThread::deleteLater);
