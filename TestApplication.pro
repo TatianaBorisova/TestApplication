@@ -24,10 +24,11 @@ SOURCES += main.cpp \
     views/studentinfoview.cpp \
     tcpclient.cpp \
     views/testbaseview.cpp \
-    views/settingsview.cpp \
     views/testtabview.cpp \
     views/clienttabview.cpp \
-    views/custombutton.cpp
+    views/custombutton.cpp \
+    views/settingstabview.cpp \
+    views/maintesttabview.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -42,10 +43,11 @@ HEADERS  += \
     views/studentinfoview.h \
     tcpclient.h \
     views/testbaseview.h \
-    views/settingsview.h \
     views/testtabview.h \
     views/clienttabview.h \
-    views/custombutton.h
+    views/custombutton.h \
+    views/settingstabview.h \
+    views/maintesttabview.h
 
 RESOURCES += \
     resources.qrc

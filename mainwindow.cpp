@@ -1,9 +1,9 @@
 #include "views/startview.h"
-#include "views/settingsview.h"
+#include "views/maintesttabview.h"
 #include "views/studentinfoview.h"
 #include "views/testview.h"
 #include "views/resultview.h"
-#include "views/clienttabview.h"
+#include "views/settingstabview.h"
 
 #include "testfilereader.h"
 #include "randomgenerator.h"
@@ -21,12 +21,12 @@
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent),
     m_startWnd(new StartView(this)),
-    m_chooseTest(new SettingsView(this)),
+    m_chooseTest(new MainTestTabView(this)),
     m_studentData(new StudentInfoView(this)),
     m_fileReader(new TestFileReader(this)),
     m_testView(new TestView(this)),
     m_resultView(new ResultView(this)),
-    m_clientView(new ClientTabView(this)),
+    m_settingsView(new SettingsTabView(this)),
     m_client(new TcpClient())
 {
     hidePreviuosWindows();
@@ -36,24 +36,24 @@ MainWindow::MainWindow(QWidget *parent) :
     m_testView->setFixedSize(width(), height());
     this->setStyleSheet("font-family: Arial; font-style: normal; font-size: 15pt;");
 
-    m_clientView->setClientConnectionState(m_client->getErrorState());
-    m_clientView->setIp(m_client->getServerIp());
-    m_clientView->setPort(m_client->getServerPort());
+    m_settingsView->setClientConnectionState(m_client->getErrorState());
+    m_settingsView->setIp(m_client->getServerIp());
+    m_settingsView->setPort(m_client->getServerPort());
 
     QIcon icon(":res/test.png");
     setWindowIcon(icon);
 
     //view connects
-    connect(m_chooseTest, &SettingsView::chosenTestDB,   m_fileReader, &TestFileReader::readAllTestsFromDb);
-    connect(m_fileReader, &TestFileReader::dbError,      m_chooseTest, &SettingsView::dbError);
-    connect(m_chooseTest, &SettingsView::chosenTestName, m_fileReader, &TestFileReader::readTestFromDb);
-    connect(m_fileReader, &TestFileReader::readTests,    m_chooseTest, &SettingsView::readTests);
+    connect(m_chooseTest, &MainTestTabView::chosenTestDB,   m_fileReader, &TestFileReader::readAllTestsFromDb);
+    connect(m_fileReader, &TestFileReader::dbError,      m_chooseTest, &MainTestTabView::dbError);
+    connect(m_chooseTest, &MainTestTabView::chosenTestName, m_fileReader, &TestFileReader::readTestFromDb);
+    connect(m_fileReader, &TestFileReader::readTests,    m_chooseTest, &MainTestTabView::readTests);
     connect(m_fileReader, &TestFileReader::sendFullTestData, this,     &MainWindow::saveTestQuestions);
 
     connect(m_startWnd,   &StartView::showView,     this, &MainWindow::showTestView);
     connect(this,         &MainWindow::showView,    this, &MainWindow::showTestView);
-    connect(m_chooseTest, &SettingsView::showView,  this, &MainWindow::showTestView);
-    connect(m_clientView, &ClientTabView::showView, this, &MainWindow::showTestView);
+    connect(m_chooseTest, &MainTestTabView::showView,  this, &MainWindow::showTestView);
+    connect(m_settingsView, &SettingsTabView::showView, this, &MainWindow::showTestView);
     connect(m_resultView, &ResultView::showView,    this, &MainWindow::showTestView);
 
     connect(m_testView, &TestView::answeredResult,     this, &MainWindow::addAnswerToStudentInfoVector);
@@ -86,7 +86,7 @@ void MainWindow::showTestView(TestAppView view)
         m_resultView->show();
         break;
     case TestClientSettingsView:
-        m_clientView->show();
+        m_settingsView->show();
         break;
     default:
         break;
@@ -177,16 +177,16 @@ void MainWindow::creareClientThread()
     m_client->moveToThread(thread);
 
     connect(this, &MainWindow::finishTestResult,            m_client,     &TcpClient::sendTestResultToServer, Qt::QueuedConnection);
-    connect(m_clientView, &ClientTabView::startConnection,  m_client,     &TcpClient::tryConnectToHost, Qt::QueuedConnection);
-    connect(m_clientView, &ClientTabView::refuseConnection, m_client,     &TcpClient::disconnectHost, Qt::QueuedConnection);
-    connect(m_client, &TcpClient::connected, m_clientView, &ClientTabView::setClientConnectionState, Qt::QueuedConnection);
-    connect(m_client, &TcpClient::connected, m_chooseTest, &SettingsView::clientConnectionState, Qt::QueuedConnection);
-    connect(m_client, &TcpClient::serverIpChanged,   m_clientView, &ClientTabView::setIp, Qt::QueuedConnection);
-    connect(m_client, &TcpClient::serverPortChanged, m_clientView, &ClientTabView::setPort, Qt::QueuedConnection);
+    connect(m_settingsView, &SettingsTabView::startConnection,  m_client,     &TcpClient::tryConnectToHost, Qt::QueuedConnection);
+    connect(m_settingsView, &SettingsTabView::refuseConnection, m_client,     &TcpClient::disconnectHost, Qt::QueuedConnection);
+    connect(m_client, &TcpClient::connected, m_settingsView, &SettingsTabView::setClientConnectionState, Qt::QueuedConnection);
+    connect(m_client, &TcpClient::connected, m_chooseTest,   &MainTestTabView::clientConnectionState, Qt::QueuedConnection);
+    connect(m_client, &TcpClient::serverIpChanged,   m_settingsView, &SettingsTabView::setIp, Qt::QueuedConnection);
+    connect(m_client, &TcpClient::serverPortChanged, m_settingsView, &SettingsTabView::setPort, Qt::QueuedConnection);
     connect(m_client, &TcpClient::fileLoadingError, this,   &MainWindow::slotFileLoadingError, Qt::QueuedConnection);
     connect(m_client, &TcpClient::error,            this,   &MainWindow::slotError);
-    connect(m_chooseTest, &SettingsView::tryGetTestsFromServer, m_client,     &TcpClient::sendFilesGettingRequest, Qt::QueuedConnection);
-    connect(m_client,     &TcpClient::sendDownloadedFilePath,   m_chooseTest, &SettingsView::sendDownloadedFilePath, Qt::QueuedConnection);
+    connect(m_chooseTest, &MainTestTabView::tryGetTestsFromServer, m_client,     &TcpClient::sendFilesGettingRequest, Qt::QueuedConnection);
+    connect(m_client,     &TcpClient::sendDownloadedFilePath,   m_chooseTest, &MainTestTabView::sendDownloadedFilePath, Qt::QueuedConnection);
 
     connect(qApp, SIGNAL(aboutToQuit()), thread, SLOT(quit()));
     connect(thread,   &QThread::finished, m_client, &QThread::deleteLater);
@@ -262,5 +262,5 @@ void MainWindow::addAnswerToStudentInfoVector(const AnswersVector &answer)
 
 void MainWindow::startServerSearch()
 {
-    emit m_clientView->startConnection(zeroHost, m_client->getServerPort());
+    emit m_settingsView->startConnection(zeroHost, m_client->getServerPort());
 }

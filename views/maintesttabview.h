@@ -1,18 +1,17 @@
-#ifndef SETTINGSTVIEW_H
-#define SETTINGSTVIEW_H
+#ifndef MAINTESTTABVIEW_H
+#define MAINTESTTABVIEW_H
 
 #include "testbaseview.h"
 
 class QGridLayout;
 class QTabWidget;
 class TestTabView;
-class ClientTabView;
 
-class SettingsView : public TestBaseView
+class MainTestTabView : public TestBaseView
 {
     Q_OBJECT
 public:
-    explicit SettingsView(QWidget *parent = 0);
+    explicit MainTestTabView(QWidget *parent = 0);
 
 signals:
     void chosenTestDB(const QString &fileName);
@@ -32,4 +31,4 @@ private:
     TestTabView   *m_testPage;
 };
 
-#endif // SETTINGSTVIEW_H
+#endif // MAINTESTTABVIEW_H
