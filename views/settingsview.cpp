@@ -12,6 +12,7 @@ SettingsView::SettingsView(QWidget *parent) :
     m_saveView(new SavingSettingsTabView(this))
 {
     connect(m_netwotkView, &ClientTabView::showView, this, &SettingsView::showView);
+    connect(this, &SettingsView::finishTestResult, m_saveView, &SavingSettingsTabView::saveTestResultInDB);
 
     QVBoxLayout *vbox = new QVBoxLayout();
     m_tab->addTab(m_netwotkView, "Сетевое подключение");
@@ -21,13 +22,16 @@ SettingsView::SettingsView(QWidget *parent) :
     setLayout(vbox);
 }
 
+void SettingsView::setFixedSize(int w, int h)
+{
+    QWidget::setFixedSize(w, h);
+    resize();
+}
+
 void SettingsView::resize()
 {
-    QWidget *wParent = dynamic_cast<QWidget *>(parent());
-    if (wParent)
-        setFixedSize(wParent->width(), wParent->height());
-
     m_tab->setFixedSize(width()*0.98, height()*0.95);
+    m_saveView->setFixedSize(m_tab->width(), m_tab->height());
 }
 
 void SettingsView::setClientConnectionState(int error)

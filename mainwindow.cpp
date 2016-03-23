@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_client(new TcpClient())
 {
     hidePreviuosWindows();
-    setFixedSize(getScreenGeometry().width()*0.9, getScreenGeometry().height()*0.9);
+    setFixedSize(getScreenGeometry().width()*0.98, getScreenGeometry().height()*0.9);
     move(0, 0);
 
     m_testView->setFixedSize(width(), height());
@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_settingsView->setClientConnectionState(m_client->getErrorState());
     m_settingsView->setIp(m_client->getServerIp());
     m_settingsView->setPort(m_client->getServerPort());
+    m_settingsView->setFixedSize(width(), height());
 
     QIcon icon(":res/test.png");
     setWindowIcon(icon);
@@ -58,7 +59,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(m_testView, &TestView::answeredResult,     this, &MainWindow::addAnswerToStudentInfoVector);
     connect(m_studentData, &StudentInfoView::nextStep, this, &MainWindow::updateStudentData);
-    connect(this, &MainWindow::finishTestResult,            m_resultView, &ResultView::finishTestResult);
+    connect(this, &MainWindow::finishTestResult, m_resultView, &ResultView::finishTestResult);
+    connect(this, &MainWindow::finishTestResult, m_settingsView, &SettingsView::finishTestResult);
 
     creareClientThread();
 }

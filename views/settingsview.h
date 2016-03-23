@@ -13,9 +13,12 @@ class SettingsView : public TestBaseView
 public:
     explicit SettingsView(QWidget *parent = 0);
 
+    void setFixedSize(int w, int h);
+
 signals:
     void startConnection(const QString &ip, int port);
     void refuseConnection();
+    void finishTestResult(const StudentResult &result);
 
 public slots:
     void setClientConnectionState(int error);
