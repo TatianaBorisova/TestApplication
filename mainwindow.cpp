@@ -211,6 +211,9 @@ void MainWindow::calculateRresult()
             score += m_questionsWeight.at(i);
             if (m_studentResult.answerInfo.at(i).assurance)
                 score++;
+        } else {
+            if (m_studentResult.answerInfo.at(i).assurance)
+                score--;
         }
     }
 
