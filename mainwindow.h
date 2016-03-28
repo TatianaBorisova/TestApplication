@@ -10,11 +10,11 @@ class StartView;
 class MainTestView;
 class TestFileReader;
 class StudentInfoView;
-class TestView;
+class StatementTestView;
 class ResultView;
 class SettingsView;
 class TcpClient;
-class DownloadManager;
+class QuestionTestView;
 
 class MainWindow : public QWidget
 {
@@ -49,17 +49,18 @@ private:
     void creareClientThread();
 
 private:
-    StartView       *m_startWnd;
-    MainTestView    *m_chooseTest;
-    StudentInfoView *m_studentData;
-    TestFileReader  *m_fileReader;
-    TestData         m_testList;
-    StudentResult    m_studentResult;
-    TestView        *m_testView;
-    ResultView      *m_resultView;
-    SettingsView *m_settingsView;
-    TcpClient       *m_client;
-    QList<int>       m_questionsWeight;
+    StartView         *m_startWnd;
+    MainTestView      *m_chooseTest;
+    StudentInfoView   *m_studentData;
+    TestFileReader    *m_fileReader;
+    TestData           m_testList;
+    StudentResult      m_studentResult;
+    StatementTestView *m_statementTestView;
+    QuestionTestView  *m_questionTestView;
+    ResultView        *m_resultView;
+    SettingsView      *m_settingsView;
+    TcpClient         *m_client;
+    QList<int>         m_questionsWeight;
 };
 
 #endif // MAINWINDOW_H

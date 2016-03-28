@@ -89,6 +89,7 @@ void TestFileReader::readAllTestsFromDb(const QString &fileName)
             TestHeaderData testData;
             testData.id            = q_existed.value(q_existed.record().indexOf("id")).toInt();
             testData.testName      = q_existed.value(q_existed.record().indexOf("testname")).toString();
+            testData.testType      = (TestType)q_existed.value(q_existed.record().indexOf("testtype")).toInt();
             testData.testTime      = q_existed.value(q_existed.record().indexOf("testtime")).toTime();
             testData.questionCount = q_existed.value(q_existed.record().indexOf("questioncount")).toInt();
             list.append(testData);
@@ -119,6 +120,7 @@ void TestFileReader::readTestFromDb(const QString &testName)
         while (q_existed.next()) {
             data.id            = q_existed.value(q_existed.record().indexOf("id")).toInt();
             data.testName      = q_existed.value(q_existed.record().indexOf("testname")).toString();
+            data.testType      = (TestType)q_existed.value(q_existed.record().indexOf("testtype")).toInt();
             data.testTime      = q_existed.value(q_existed.record().indexOf("testtime")).toTime();
             data.questionCount = q_existed.value(q_existed.record().indexOf("questioncount")).toInt();
         }

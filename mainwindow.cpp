@@ -1,9 +1,10 @@
 #include "views/startview.h"
 #include "views/maintestview.h"
 #include "views/studentinfoview.h"
-#include "views/testview.h"
+#include "views/statementtestview.h"
 #include "views/resultview.h"
 #include "views/settingsview.h"
+#include "views/questiontestview.h"
 
 #include "testfilereader.h"
 #include "randomgenerator.h"
@@ -24,7 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_chooseTest(new MainTestView(this)),
     m_studentData(new StudentInfoView(this)),
     m_fileReader(new TestFileReader(this)),
-    m_testView(new TestView(this)),
+    m_statementTestView(new StatementTestView(this)),
+    m_questionTestView(new QuestionTestView(this)),
     m_resultView(new ResultView(this)),
     m_settingsView(new SettingsView(this)),
     m_client(new TcpClient())
@@ -33,7 +35,9 @@ MainWindow::MainWindow(QWidget *parent) :
     setFixedSize(getScreenGeometry().width()*0.98, getScreenGeometry().height()*0.9);
     move(0, 0);
 
-    m_testView->setFixedSize(width(), height());
+    m_statementTestView->setFixedSize(width(), height());
+    m_questionTestView->setFixedSize(width(), height());
+
     this->setStyleSheet("font-family: Arial; font-style: normal; font-size: 15pt;");
 
     m_settingsView->setClientConnectionState(m_client->getErrorState());
@@ -57,7 +61,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_settingsView, &SettingsView::showView, this, &MainWindow::showTestView);
     connect(m_resultView, &ResultView::showView,    this, &MainWindow::showTestView);
 
-    connect(m_testView, &TestView::answeredResult,     this, &MainWindow::addAnswerToStudentInfoVector);
+    connect(m_statementTestView, &StatementTestView::answeredResult,    this, &MainWindow::addAnswerToStudentInfoVector);
+    connect(m_questionTestView,  &QuestionTestView::answeredResult,     this, &MainWindow::addAnswerToStudentInfoVector);
     connect(m_studentData, &StudentInfoView::nextStep, this, &MainWindow::updateStudentData);
     connect(this, &MainWindow::finishTestResult, m_resultView, &ResultView::finishTestResult);
     connect(this, &MainWindow::finishTestResult, m_settingsView, &SettingsView::finishTestResult);
@@ -80,9 +85,13 @@ void MainWindow::showTestView(TestAppView view)
     case TestStudentInfoView:
         m_studentData->show();
         break;
-    case TestEntryView:
+    case TestStatementEntryView:
         if (this->setTestData())
-            m_testView->show();
+            m_statementTestView->show();
+        break;
+    case TestQuestionEntryView:
+        if (this->setTestData())
+            m_questionTestView->show();
         break;
     case TestResultView:
         m_resultView->show();
@@ -125,7 +134,8 @@ void MainWindow::setMainWindowSize(TestAppView view)
     case TestStartView:
     case TestWayView:
     case TestStudentInfoView:
-    case TestEntryView:
+    case TestStatementEntryView:
+    case TestQuestionEntryView:
     case TestResultView:
     default:
         mainW = getScreenGeometry().width()*0.98;
@@ -146,9 +156,15 @@ bool MainWindow::setTestData()
 
     if (m_testList.questions.count() > 1) {
         int testNumber  = RandomGenerator::getValueInInterval(m_testList.questions.count());
-        m_testView->setTestData(m_testList.questions.takeAt(testNumber));
+        if (m_testList.testType == StatementTest)
+            m_statementTestView->setTestData(m_testList.questions.takeAt(testNumber));
+        else
+            m_questionTestView->setTestData(m_testList.questions.takeAt(testNumber));
     } else if (m_testList.questions.count() == 1) {
-        m_testView->setTestData(m_testList.questions.takeLast());
+        if (m_testList.testType == StatementTest)
+            m_statementTestView->setTestData(m_testList.questions.takeLast());
+        else
+            m_questionTestView->setTestData(m_testList.questions.takeLast());
     }
     return true;
 }
@@ -236,6 +252,7 @@ void MainWindow::saveTestQuestions(const TestData &testInfo)
     m_testList.questions.clear();
     m_testList.questionCount = -1;
     m_testList.testName.clear();
+    m_testList.testType = NoTypeTest;
     m_testList.testTime.setHMS(0, 0, 0);
     m_testList.questions.clear();
 
@@ -255,13 +272,20 @@ void MainWindow::updateStudentData(const StudentResult &data)
     m_studentResult.answerInfo.clear();
     m_studentResult = data;
 
-    emit showView(TestEntryView);
+    if (m_testList.testType == StatementTest)
+        emit showView(TestStatementEntryView);
+    else
+        emit showView(TestQuestionEntryView);
 }
 
 void MainWindow::addAnswerToStudentInfoVector(const AnswersVector &answer)
 {
     m_studentResult.answerInfo.append(answer);
-    emit showView(TestEntryView);
+
+    if (m_testList.testType == StatementTest)
+        emit showView(TestStatementEntryView);
+    else
+        emit showView(TestQuestionEntryView);
 }
 
 

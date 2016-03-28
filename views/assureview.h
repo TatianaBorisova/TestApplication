@@ -5,6 +5,7 @@
 
 class QPushButton;
 class QHBoxLayout;
+class QVBoxLayout;
 class QLabel;
 
 class AssureView : public TestBaseView
@@ -23,6 +24,7 @@ protected:
 private:
     QLabel      *m_assure;
     QHBoxLayout *m_hbox;
+    QVBoxLayout *m_vbox;
     QPushButton *m_yesBtn;
     QPushButton *m_noBtn;
 };

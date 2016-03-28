@@ -19,7 +19,6 @@ SOURCES += main.cpp \
     randomgenerator.cpp \
     views/assureview.cpp \
     views/resultview.cpp \
-    views/testview.cpp \
     views/startview.cpp \
     views/studentinfoview.cpp \
     tcpclient.cpp \
@@ -29,7 +28,9 @@ SOURCES += main.cpp \
     views/custombutton.cpp \
     views/maintestview.cpp \
     views/settingsview.cpp \
-    views/savingsettingstabview.cpp
+    views/savingsettingstabview.cpp \
+    views/statementtestview.cpp \
+    views/questiontestview.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -39,7 +40,6 @@ HEADERS  += \
     global.h \
     views/assureview.h \
     views/resultview.h \
-    views/testview.h \
     views/startview.h \
     views/studentinfoview.h \
     tcpclient.h \
@@ -49,7 +49,9 @@ HEADERS  += \
     views/custombutton.h \
     views/maintestview.h \
     views/settingsview.h \
-    views/savingsettingstabview.h
+    views/savingsettingstabview.h \
+    views/statementtestview.h \
+    views/questiontestview.h
 
 RESOURCES += \
     resources.qrc

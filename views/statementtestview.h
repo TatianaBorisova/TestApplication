@@ -1,5 +1,5 @@
-#ifndef TESTVIEW_H
-#define TESTVIEW_H
+#ifndef STATEMENTTESTVIEW_H
+#define STATEMENTTESTVIEW_H
 
 #include "global.h"
 #include "testbaseview.h"
@@ -13,11 +13,11 @@ class QStringList;
 class AssureView;
 class CustomButton;
 
-class TestView : public TestBaseView
+class StatementTestView : public TestBaseView
 {
     Q_OBJECT
 public:
-    explicit TestView(QWidget *parent = 0);
+    explicit StatementTestView(QWidget *parent = 0);
 
     void setTestData(const TestQuestions &question);
     void setFixedSize(int w, int h);
@@ -39,19 +39,19 @@ private:
     void hideEntry();
     void showEntry();
     void setImg(QByteArray img);
-    QString addUpperSymbol(const QString &str);
 
 private:
     QLabel              *m_header;
     QLabel              *m_questionEntry;
     QLabel              *m_questionImg;
     QVBoxLayout         *m_mainBox;
-    QPushButton         *m_nextBtn;
+    QPushButton         *m_answerBtn;
     QStringList          m_answersList;
     QString              m_trueAnswer;
+    QWidget             *m_answersView;
     QGridLayout         *m_radioBtnList;
     AssureView          *m_anssureView;
     AnswersVector        m_answer;
 };
 
-#endif // TESTVIEW_H
+#endif // STATEMENTTESTVIEW_H

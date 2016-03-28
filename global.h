@@ -18,8 +18,13 @@ const int headerMsgSize = 16;
 
 //encryption
 const QString encryptKey = QString("test");
-
 const QString zeroHost = QString("0.0.0.0");
+
+enum TestType {
+    NoTypeTest = -1,
+    StatementTest = 0,
+    QuestionTest
+};
 
 typedef struct  test{
     QString question;
@@ -30,8 +35,8 @@ typedef struct  test{
 
 typedef struct answers {
     QString statement;
-    bool isCorrectAnswer;
-    int assurance;
+    bool    isCorrectAnswer;
+    int     assurance;
 } AnswersVector;
 
 typedef struct student {
@@ -48,9 +53,9 @@ typedef struct student {
 } StudentResult;
 
 typedef struct testAnswers {
-    QString correctAnswer;
-    QString uncorrectAnswers;
-    QString imgName;
+    QString    correctAnswer;
+    QString    uncorrectAnswers;
+    QString    imgName;
     QByteArray image;
 } Answers;
 
@@ -61,25 +66,28 @@ typedef struct questions {
 } TestQuestions;
 
 typedef struct testSt {
-    int id;
-    QString testName;
-    QTime testTime;
-    int questionCount;
+    int      id;
+    QString  testName;
+    TestType testType;
+    QTime    testTime;
+    int      questionCount;
     QList<TestQuestions> questions;
 } TestData;
 
 typedef struct testHeader {
-    int id;
-    QString testName;
-    QTime testTime;
-    int questionCount;
+    int      id;
+    QString  testName;
+    TestType testType;
+    QTime    testTime;
+    int      questionCount;
 } TestHeaderData;
 
 enum TestAppView{
     TestStartView = 0,
     TestWayView,
     TestStudentInfoView,
-    TestEntryView,
+    TestStatementEntryView,
+    TestQuestionEntryView,
     TestResultView,
     TestClientSettingsView
 };
