@@ -79,7 +79,7 @@ void StatementTestView::setFixedSize(int w, int h)
 void StatementTestView::resize()
 {
     m_questionImg->setFixedSize(height()*0.3, height()*0.3);
-    m_questionEntry->setFixedWidth(viewWidth);
+    m_questionEntry->setFixedWidth(width()*0.7);
 
     if (m_questionImg->pixmap())
         m_questionImg->setPixmap(m_questionImg->pixmap()->scaled(m_questionImg->height(), m_questionImg->height()));

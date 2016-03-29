@@ -28,18 +28,14 @@ QuestionTestView::QuestionTestView(QWidget *parent) :
     m_mainBox(new QVBoxLayout(this)),
     m_answerBtn(new QPushButton(this)),
     m_answersView(new QWidget(this)),
-    m_radioBtnList(new QGridLayout(m_answersView)),
-    m_anssureView(new AssureView(this))
+    m_radioBtnList(new QGridLayout(m_answersView))
 {
-    m_anssureView->setVisible(false);
     m_questionImg->setVisible(false);
 
     m_questionEntry->setWordWrap(true);
     m_questionEntry->setAlignment(Qt::AlignCenter);
 
     connect(m_answerBtn,   &QPushButton::clicked,  this, &QuestionTestView::setAnsweredState);
-    connect(m_anssureView, &AssureView::yesButton, this, &QuestionTestView::yesVariant);
-    connect(m_anssureView, &AssureView::noButton,  this, &QuestionTestView::noVariant);
 
     this->setStyleSheet("font-family: Arial; font-style: normal; font-size: 20pt;");
 
@@ -59,7 +55,7 @@ QuestionTestView::QuestionTestView(QWidget *parent) :
     m_mainBox->addWidget(m_answerBtn);
 
     m_mainBox->setAlignment(m_questionEntry, Qt::AlignHCenter);
-    m_mainBox->setAlignment(m_answersView,   Qt::AlignHCenter);
+    m_mainBox->setAlignment(m_answersView,   Qt::AlignRight);
     m_mainBox->setAlignment(m_answerBtn,     Qt::AlignHCenter);
     m_mainBox->setAlignment(m_questionImg,   Qt::AlignHCenter);
 
@@ -79,12 +75,11 @@ void QuestionTestView::setFixedSize(int w, int h)
 void QuestionTestView::resize()
 {
     m_questionImg->setFixedSize(height()*0.3, height()*0.3);
-    m_questionEntry->setFixedWidth(viewWidth);
+    m_questionEntry->setFixedWidth(width()*0.7);
+    m_answersView->setFixedWidth(width()*0.7);
 
     if (m_questionImg->pixmap())
         m_questionImg->setPixmap(m_questionImg->pixmap()->scaled(m_questionImg->height(), m_questionImg->height()));
-
-  //  m_radioBtnList->setSpacing(customBtnSize);
 }
 
 void QuestionTestView::setTestData(const TestQuestions &question)
@@ -144,7 +139,9 @@ void QuestionTestView::setAnsweredState()
         return;
     } else {
         hideEntry();
-        m_anssureView->show();
+        m_answer.assurance = -1;
+        emit answeredResult(m_answer);
+        showEntry();
     }
 }
 
@@ -181,24 +178,6 @@ void QuestionTestView::setImg(QByteArray img)
     m_questionImg->setVisible(true);
 }
 
-void QuestionTestView::yesVariant()
-{
-    if (m_answer.isCorrectAnswer)
-        m_answer.assurance = 1;
-    else
-        m_answer.assurance = 0;
-
-    emit answeredResult(m_answer);
-    showEntry();
-}
-
-void QuestionTestView::noVariant()
-{
-    m_answer.assurance = 0;
-    emit answeredResult(m_answer);
-    showEntry();
-}
-
 void QuestionTestView::clearRadioBtnList()
 {
     CustomButton::deleteAllBtn();
@@ -226,7 +205,6 @@ void QuestionTestView::createRadioBtnList(const QStringList &list)
 
         btn->setText(list.at(i));
         btn->setButtonId(i);
-//        btn->setFixedSize(customBtnSize, customBtnSize);
 
         CustomButton::addNewBtn(i, btn);
 
@@ -237,7 +215,5 @@ void QuestionTestView::createRadioBtnList(const QStringList &list)
             m_radioBtnList->addWidget(btn, rightValue, 0);
             rightValue++;
         }
-
-        // m_createdBtn.append(btn);
     }
 }

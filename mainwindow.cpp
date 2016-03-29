@@ -221,15 +221,24 @@ void MainWindow::calculateRresult()
              << m_studentResult.group;
 
     int score = 0;
-    //calculate real score
-    for (int i = 0; i < m_studentResult.answerInfo.count(); i++) {
-        if (m_studentResult.answerInfo.at(i).isCorrectAnswer) {
-            score += m_questionsWeight.at(i);
-            if (m_studentResult.answerInfo.at(i).assurance)
-                score++;
-        } else {
-            if (m_studentResult.answerInfo.at(i).assurance)
-                score--;
+    if (m_testList.testType == StatementTest) {
+        //calculate real score
+        for (int i = 0; i < m_studentResult.answerInfo.count(); i++) {
+            if (m_studentResult.answerInfo.at(i).isCorrectAnswer) {
+                score += m_questionsWeight.at(i);
+                if (m_studentResult.answerInfo.at(i).assurance)
+                    score++;
+            } else {
+                if (m_studentResult.answerInfo.at(i).assurance)
+                    score--;
+            }
+        }
+    } else {
+        //calculate real score
+        for (int i = 0; i < m_studentResult.answerInfo.count(); i++) {
+            if (m_studentResult.answerInfo.at(i).isCorrectAnswer) {
+                score += m_questionsWeight.at(i);
+            }
         }
     }
 
@@ -238,9 +247,17 @@ void MainWindow::calculateRresult()
 
     m_studentResult.maxPosibleScore = 0;
     //calculate MAX possible score
-    for (int i = 0; i < m_studentResult.answerInfo.count(); i++) {
-        m_studentResult.maxPosibleScore += m_questionsWeight.at(i);
-        m_studentResult.maxPosibleScore++;
+    if (m_testList.testType == StatementTest) {
+        for (int i = 0; i < m_studentResult.answerInfo.count(); i++) {
+            m_studentResult.maxPosibleScore += m_questionsWeight.at(i);
+            m_studentResult.maxPosibleScore++;
+            qDebug() << "there" << m_studentResult.maxPosibleScore;
+        }
+    } else {
+        for (int i = 0; i < m_studentResult.answerInfo.count(); i++) {
+            m_studentResult.maxPosibleScore += m_questionsWeight.at(i);
+            qDebug() << "here" << m_studentResult.maxPosibleScore;
+        }
     }
     qDebug() << "m_studentResult.testName = " << m_studentResult.testName;
     qDebug() << "score" << m_studentResult.score << "max possible score " << m_studentResult.maxPosibleScore;

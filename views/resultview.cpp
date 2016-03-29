@@ -55,7 +55,7 @@ void ResultView::finishTestResult(const StudentResult &result)
 {
     m_fio->setText(result.firstName + " " + result.secondName + " " + result.surname);
     m_group->setText(result.group);
-    m_sore->setText(QString::number(result.score) + " из " + QString::number(result.answerInfo.count()*2) + " возможных.");
+    m_sore->setText(QString::number(result.score) + " из " + QString::number(result.maxPosibleScore) + " возможных.");
 }
 
 void ResultView::back()

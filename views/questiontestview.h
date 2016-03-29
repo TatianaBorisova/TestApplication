@@ -27,8 +27,6 @@ signals:
 
 private slots:
     void setAnsweredState();
-    void yesVariant();
-    void noVariant();
 
 protected:
     virtual void resize();
@@ -50,7 +48,6 @@ private:
     QString              m_trueAnswer;
     QWidget             *m_answersView;
     QGridLayout         *m_radioBtnList;
-    AssureView          *m_anssureView;
     AnswersVector        m_answer;
 };
 
