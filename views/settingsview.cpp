@@ -14,6 +14,9 @@ SettingsView::SettingsView(QWidget *parent) :
     connect(m_netwotkView, &ClientTabView::showView, this, &SettingsView::showView);
     connect(this, &SettingsView::finishTestResult, m_saveView, &SavingSettingsTabView::saveTestResultInDB);
 
+    connect(m_netwotkView, &ClientTabView::refuseConnection, this, &SettingsView::refuseConnection);
+    connect(m_netwotkView, &ClientTabView::startConnection, this, &SettingsView::startConnection);
+
     QVBoxLayout *vbox = new QVBoxLayout();
     m_tab->addTab(m_netwotkView, "Сетевое подключение");
     m_tab->addTab(m_saveView, "Настройки сохранения");

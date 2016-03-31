@@ -55,16 +55,17 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_fileReader, &TestFileReader::readTests,    m_chooseTest, &MainTestView::readTests);
     connect(m_fileReader, &TestFileReader::sendFullTestData, this,     &MainWindow::saveTestQuestions);
 
-    connect(m_startWnd,   &StartView::showView,     this, &MainWindow::showTestView);
-    connect(this,         &MainWindow::showView,    this, &MainWindow::showTestView);
-    connect(m_chooseTest, &MainTestView::showView,  this, &MainWindow::showTestView);
+    connect(m_startWnd,     &StartView::showView,    this, &MainWindow::showTestView);
+    connect(this,           &MainWindow::showView,   this, &MainWindow::showTestView);
+    connect(m_chooseTest,   &MainTestView::showView, this, &MainWindow::showTestView);
     connect(m_settingsView, &SettingsView::showView, this, &MainWindow::showTestView);
-    connect(m_resultView, &ResultView::showView,    this, &MainWindow::showTestView);
+    connect(m_resultView,   &ResultView::showView,   this, &MainWindow::showTestView);
 
     connect(m_statementTestView, &StatementTestView::answeredResult,    this, &MainWindow::addAnswerToStudentInfoVector);
     connect(m_questionTestView,  &QuestionTestView::answeredResult,     this, &MainWindow::addAnswerToStudentInfoVector);
-    connect(m_studentData, &StudentInfoView::nextStep, this, &MainWindow::updateStudentData);
-    connect(this, &MainWindow::finishTestResult, m_resultView, &ResultView::finishTestResult);
+    connect(m_studentData,       &StudentInfoView::nextStep,            this, &MainWindow::updateStudentData);
+
+    connect(this, &MainWindow::finishTestResult, m_resultView,   &ResultView::finishTestResult);
     connect(this, &MainWindow::finishTestResult, m_settingsView, &SettingsView::finishTestResult);
 
     creareClientThread();
@@ -194,15 +195,19 @@ void MainWindow::creareClientThread()
     QThread *thread = new QThread();
     m_client->moveToThread(thread);
 
-    connect(this, &MainWindow::finishTestResult,            m_client,     &TcpClient::sendTestResultToServer, Qt::QueuedConnection);
+    connect(this, &MainWindow::finishTestResult,             m_client,     &TcpClient::sendTestResultToServer, Qt::QueuedConnection);
     connect(m_settingsView, &SettingsView::startConnection,  m_client,     &TcpClient::tryConnectToHost, Qt::QueuedConnection);
     connect(m_settingsView, &SettingsView::refuseConnection, m_client,     &TcpClient::disconnectHost, Qt::QueuedConnection);
+
     connect(m_client, &TcpClient::connected, m_settingsView, &SettingsView::setClientConnectionState, Qt::QueuedConnection);
     connect(m_client, &TcpClient::connected, m_chooseTest,   &MainTestView::clientConnectionState, Qt::QueuedConnection);
+
     connect(m_client, &TcpClient::serverIpChanged,   m_settingsView, &SettingsView::setIp, Qt::QueuedConnection);
     connect(m_client, &TcpClient::serverPortChanged, m_settingsView, &SettingsView::setPort, Qt::QueuedConnection);
+
     connect(m_client, &TcpClient::fileLoadingError, this,   &MainWindow::slotFileLoadingError, Qt::QueuedConnection);
     connect(m_client, &TcpClient::error,            this,   &MainWindow::slotError);
+
     connect(m_chooseTest, &MainTestView::tryGetTestsFromServer, m_client,     &TcpClient::sendFilesGettingRequest, Qt::QueuedConnection);
     connect(m_client,     &TcpClient::sendDownloadedFilePath,   m_chooseTest, &MainTestView::sendDownloadedFilePath, Qt::QueuedConnection);
 
@@ -226,8 +231,8 @@ void MainWindow::calculateRresult()
         for (int i = 0; i < m_studentResult.answerInfo.count(); i++) {
             if (m_studentResult.answerInfo.at(i).isCorrectAnswer) {
                 score += m_questionsWeight.at(i);
-                if (m_studentResult.answerInfo.at(i).assurance)
-                    score++;
+//                if (m_studentResult.answerInfo.at(i).assurance)
+//                    score++;
             } else {
                 if (m_studentResult.answerInfo.at(i).assurance)
                     score--;
@@ -250,13 +255,11 @@ void MainWindow::calculateRresult()
     if (m_testList.testType == StatementTest) {
         for (int i = 0; i < m_studentResult.answerInfo.count(); i++) {
             m_studentResult.maxPosibleScore += m_questionsWeight.at(i);
-            m_studentResult.maxPosibleScore++;
-            qDebug() << "there" << m_studentResult.maxPosibleScore;
+           // m_studentResult.maxPosibleScore++;
         }
     } else {
         for (int i = 0; i < m_studentResult.answerInfo.count(); i++) {
             m_studentResult.maxPosibleScore += m_questionsWeight.at(i);
-            qDebug() << "here" << m_studentResult.maxPosibleScore;
         }
     }
     qDebug() << "m_studentResult.testName = " << m_studentResult.testName;

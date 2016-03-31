@@ -326,6 +326,17 @@ void TcpClient::sendTestResultToServer(const StudentResult &result)
             + divSymbol
             + QString::number(result.maxPosibleScore);
 
+    for (int i = 0; i < result.answerInfo.count(); i++) {
+        studentResult += divSymbol;
+        studentResult += result.answerInfo.at(i).statement;
+        studentResult += divSymbol;
+        studentResult += result.answerInfo.at(i).chosenAnswer;
+        studentResult += divSymbol;
+        studentResult += QString::number(result.answerInfo.at(i).isCorrectAnswer);
+        studentResult += divSymbol;
+        studentResult += QString::number(result.answerInfo.at(i).assurance);
+    }
+
     //non latin symbols have more size then latin,
     //so string length != real symbols array size
     QByteArray bytes = studentResult.toUtf8();

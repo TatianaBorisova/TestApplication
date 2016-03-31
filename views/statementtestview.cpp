@@ -92,7 +92,7 @@ void StatementTestView::setTestData(const TestQuestions &question)
     m_answersList.clear();
     m_trueAnswer.clear();
 
-    m_answer.isCorrectAnswer = false;
+    m_answer.isCorrectAnswer = 0;
     m_answer.assurance = -1;
     m_answer.statement.clear();
 
@@ -135,7 +135,12 @@ void StatementTestView::setAnsweredState()
             QRadioButton *btn = cbtn->radioBtn();
             if (btn && btn->isChecked()) {
                 isChecked = true;
-                m_answer.isCorrectAnswer = (m_trueAnswer.toLower() == cbtn->text().toLower());
+                if (m_trueAnswer.toLower() == cbtn->text().toLower())
+                    m_answer.isCorrectAnswer = 1;
+                else
+                    m_answer.isCorrectAnswer = 0;
+                //save chosen answer for statistic info
+                m_answer.chosenAnswer = cbtn->text();
             }
         }
     }
