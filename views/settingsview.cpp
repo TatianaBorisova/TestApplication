@@ -12,6 +12,7 @@ SettingsView::SettingsView(QWidget *parent) :
     m_saveView(new SavingSettingsTabView(this))
 {
     connect(m_netwotkView, &ClientTabView::showView, this, &SettingsView::showView);
+    connect(m_saveView, &SavingSettingsTabView::showView, this, &SettingsView::showView);
     connect(this, &SettingsView::finishTestResult, m_saveView, &SavingSettingsTabView::saveTestResultInDB);
 
     connect(m_netwotkView, &ClientTabView::refuseConnection, this, &SettingsView::refuseConnection);

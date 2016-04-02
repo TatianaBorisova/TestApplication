@@ -34,6 +34,7 @@ typedef struct  test{
 } TestStructure ;
 
 typedef struct answers {
+    int     id;
     QString statement;
     QString chosenAnswer;
     int     isCorrectAnswer;
@@ -50,7 +51,7 @@ typedef struct student {
     int score;
     int maxPosibleScore;
     QString time;
-    QList<AnswersVector> answerInfo;
+    QList <AnswersVector> answerInfo;
 } StudentResult;
 
 typedef struct testAnswers {

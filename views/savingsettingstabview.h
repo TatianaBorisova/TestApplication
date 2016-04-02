@@ -58,7 +58,7 @@ private:
     QAxObject      *m_wordApp;
     QAxObject      *m_wordDoc;
     QList<StudentResult> m_dbTable;
-
+    QList<AnswersVector> m_answerInfo;
 };
 
 #endif // SAVINGSETTINGSTABVIEW_H

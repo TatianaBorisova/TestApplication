@@ -18,8 +18,9 @@ ResultView::ResultView(QWidget *parent) :
 {
     connect(m_back, &QPushButton::clicked, this, &ResultView::back);
 
-    this->setStyleSheet("font-family: Arial; font-style: normal; font-size: 20pt;");
+    this->setStyleSheet("font-family: Arial; font-style: normal; font-size: 20pt; ");
 
+    m_back->setStyleSheet("QPushButton { height: 45px; }");
     m_back->setFixedWidth(300);
 
     m_header->setAlignment(Qt::AlignHCenter);

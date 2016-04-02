@@ -44,9 +44,9 @@ StudentInfoView::StudentInfoView(QWidget *parent) :
     m_centerBox->addWidget(m_info,            4, 0);
     m_centerBox->addWidget(m_nextButton,      5, 0);
 
-    m_centerBox->addWidget(m_nameField,    0, 1);
+    m_centerBox->addWidget(m_surnameField, 0, 1);
     m_centerBox->addWidget(m_secondField,  1, 1);
-    m_centerBox->addWidget(m_surnameField, 2, 1);
+    m_centerBox->addWidget(m_nameField,    2, 1);
     m_centerBox->addWidget(m_groupField,   3, 1);
 
     setLayout(m_centerBox);
