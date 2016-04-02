@@ -30,6 +30,7 @@ protected:
 private slots:
     void saveToDocFile();
     void fillResultStructure();
+    void back();
 
     QString createDocFile();
 
@@ -53,6 +54,7 @@ private:
     QLabel         *m_header;
     QPushButton    *m_update;
     QPushButton    *m_docSaver;
+    QPushButton    *m_back;
     QAxObject      *m_wordApp;
     QAxObject      *m_wordDoc;
     QList<StudentResult> m_dbTable;

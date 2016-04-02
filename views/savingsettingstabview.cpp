@@ -36,19 +36,22 @@ SavingSettingsTabView::SavingSettingsTabView(QWidget *parent) :
     m_table(new QTableView(this)),
     m_header(new QLabel("Таблица результатов тестирования:", this)),
     m_update(new QPushButton("Обновить таблицу", this)),
-    m_docSaver(new QPushButton("Выгрузить в Doc файл", this))
+    m_docSaver(new QPushButton("Выгрузить в Doc файл", this)),
+    m_back(new QPushButton("Вернуться на главную", this))
 {
+    m_header->setFixedHeight(50);
     this->setStyleSheet("QPushButton { height: 45px; }"
                         "QTextEdit { height: 45px; }"
                         "QTimeEdit { height: 45px; }"
                         "QLineEdit { height: 45px; }"
                         "QPlainTextEdit { height: 45px; }");
 
-    connect(m_update, &QPushButton::clicked, this, &SavingSettingsTabView::loadDbModel);
+    connect(m_update,   &QPushButton::clicked, this, &SavingSettingsTabView::loadDbModel);
     connect(m_docSaver, &QPushButton::clicked, this, &SavingSettingsTabView::saveToDocFile);
 
-    connect(m_choosePath, &QPushButton::clicked, this, &SavingSettingsTabView::chooseResultDBPathSlot);
+    connect(m_choosePath, &QPushButton::clicked,       this, &SavingSettingsTabView::chooseResultDBPathSlot);
     connect(m_resDbName,  &QLineEdit::editingFinished, this, &SavingSettingsTabView::changeResultDbNameSlot);
+    connect(m_back,       &QPushButton::clicked,       this, &SavingSettingsTabView::back);
 
     m_table->setModel(m_model);
 
@@ -59,19 +62,28 @@ SavingSettingsTabView::SavingSettingsTabView(QWidget *parent) :
     QVBoxLayout *vbox = new QVBoxLayout(this);
     vbox->addWidget(m_update);
     vbox->addWidget(m_docSaver);
+    vbox->addWidget(m_back);
 
-    m_grid->addLayout(hbox, 0, 0);
+    QVBoxLayout *middle = new QVBoxLayout(this);
+    middle->addWidget(m_header);
+    middle->addWidget(m_table);
+
+    m_grid->addLayout(hbox,         0, 0);
     m_grid->addWidget(m_choosePath, 0, 1);
-    m_grid->addLayout(vbox, 2, 1);
-    m_grid->addWidget(m_header, 2, 0);
-    m_grid->addWidget(m_table,  3, 0);
+    m_grid->addLayout(middle,       2, 0);
+    m_grid->addLayout(vbox,         2, 1);
 
     m_grid->setMargin(margin);
-    m_grid->setSpacing(margin);
+    m_grid->setSpacing(margin/2);
 
     setDbName(m_savingPath->text() + m_resDbName->text());
 
     setLayout(m_grid);
+}
+
+void SavingSettingsTabView::back()
+{
+    emit showView(TestStartView);
 }
 
 void SavingSettingsTabView::chooseResultDBPathSlot()
@@ -94,7 +106,7 @@ void SavingSettingsTabView::setFixedSize(int w, int h)
 
 void SavingSettingsTabView::resize()
 {
-    m_table->setFixedSize(width()*0.8, height()*0.5);
+    m_table->setFixedHeight(height()*0.5);
 
     //make table full screen
     for (int i = 0; i < m_model->columnCount(); i++) {

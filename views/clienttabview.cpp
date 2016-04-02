@@ -15,7 +15,7 @@ ClientTabView::ClientTabView(QWidget *parent) :
     m_portBox(new QLineEdit(this)),
     m_connectToChosen(new QPushButton("Подключиться к выбранному IP", this)),
     m_connectToAny(new QPushButton("Поиск IP подключения", this)),
-    m_back(new QPushButton("Назад", this)),
+    m_back(new QPushButton("Вернуться на главную", this)),
     m_connectionState(new QLabel("Статус: ", this)),
     m_box(new QGridLayout(this)),
     m_error(-1)
