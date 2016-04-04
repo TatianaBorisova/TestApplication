@@ -83,7 +83,6 @@ void TestFileReader::readAllTestsFromDb(const QString &fileName)
     q_existed.prepare("SELECT * FROM testdata");
 
     if (q_existed.exec()) {
-
         while (q_existed.next()) {
 
             TestHeaderData testData;
@@ -96,7 +95,13 @@ void TestFileReader::readAllTestsFromDb(const QString &fileName)
         }
     }
 
-    emit readTests(list);
+    if (list.count() <= 0) {
+        QMessageBox::warning(0, "Warning", "База данных не содерждит никакой тестовой информации.");
+        emit dbError();
+    } else {
+        emit readTests(list);
+    }
+
     dbPtr.close();
 }
 
