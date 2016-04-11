@@ -234,104 +234,92 @@ void SavingSettingsTabView::saveToDocFile()
 
         // создание таблицы
         QAxObject* pTables = pActiveDocument->querySubObject("Tables()");
-        //QAxObject* pNewTable = pTables->querySubObject("Add(Id, testname, firstname, secondName, surname, groupname, scorevalue, maxvalue, testtime)", pSelection->property("Range"), 1, 8, 1, 1);
-
-        QAxObject* pNewTable = pTables->querySubObject("Add(Id, testname, firstname, secondName, surname, groupname, scorevalue, maxvalue, testtime)", pSelection->property("Range"), 1, 2, 1, 1);
+        int commonRowCount = (m_dbTable.count())*7 + (m_answerInfo.count())*4;
+        QAxObject* pNewTable = pTables->querySubObject("Add(Id, testname, firstname, secondName, surname, groupname, scorevalue, maxvalue, testtime)", pSelection->property("Range"), commonRowCount, 2, 1, 1);
 
         //Align table to center.
         pNewTable->querySubObject("Rows()")->setProperty("Alignment", "wdAlignRowCenter");
 
         //Iterate found records.
         QAxObject *pCell = NULL, *pCellRange = NULL;
+        int table_row = 1;
 
-        int commonRowCount = 0;
-        commonRowCount += m_dbTable.count() * 6;
-        commonRowCount += m_answerInfo.count() * 4;
-
-        for(int cur_row = 0; cur_row < commonRowCount - 1; cur_row++) //do you know why count - 1?? :) Coz Add(data) has created table with 1 row and 2 columns above
-        {
-            //Inserting new row for each new data.
-            pSelection->dynamicCall("InsertRowsBelow()");
-        }
-
-        int table_row = 0;
-        for (int table_counter = 0; table_counter < m_dbTable.count(); table_counter++) {
+        for (int row = 0; row < m_dbTable.count(); row++) {
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row, 1);
             pCellRange = pCell->querySubObject("Range()");
-            pCellRange->dynamicCall("InsertAfter(Text)", "Время");
+            pCellRange->dynamicCall("InsertAfter(Text)", "НАЗВАНИЕ ТЕСТА");
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row, 2);
             pCellRange = pCell->querySubObject("Range()");
-            pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(table_counter).time);
+            pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(row).testName);
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 1, 1);
             pCellRange = pCell->querySubObject("Range()");
-            pCellRange->dynamicCall("InsertAfter(Text)", "Название теста");
+            pCellRange->dynamicCall("InsertAfter(Text)", "ФИО");
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 1, 2);
             pCellRange = pCell->querySubObject("Range()");
-            pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(table_counter).testName);
+            pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(row).surname
+                                    + " " + m_dbTable.at(row).firstName.at(0)
+                                    + ". " + m_dbTable.at(row).secondName.at(0) + ".");
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 2, 1);
             pCellRange = pCell->querySubObject("Range()");
-            pCellRange->dynamicCall("InsertAfter(Text)", "ФИО");
+            pCellRange->dynamicCall("InsertAfter(Text)", "ВРЕМЯ");
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 2, 2);
             pCellRange = pCell->querySubObject("Range()");
-            pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(table_counter).surname
-                                    + " " + m_dbTable.at(table_counter).firstName.at(0)
-                                    + ". " + m_dbTable.at(table_counter).secondName.at(0) + ".");
+            pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(row).time);
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 3, 1);
             pCellRange = pCell->querySubObject("Range()");
-            pCellRange->dynamicCall("InsertAfter(Text)", "Полученный балл");
+            pCellRange->dynamicCall("InsertAfter(Text)", "ПОЛУЧЕННЫЙ БАЛЛ");
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 3, 2);
             pCellRange = pCell->querySubObject("Range()");
-            pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(table_counter).score);
+            pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(row).score);
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 4, 1);
             pCellRange = pCell->querySubObject("Range()");
-            pCellRange->dynamicCall("InsertAfter(Text)", "Маскимально возможный балл");
+            pCellRange->dynamicCall("InsertAfter(Text)", "ВОЗМОЖНЫЙ МАКСИМУМ");
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 4, 2);
             pCellRange = pCell->querySubObject("Range()");
-            pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(table_counter).maxPosibleScore);
+            pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(row).maxPosibleScore);
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 5, 1);
             pCellRange = pCell->querySubObject("Range()");
-            pCellRange->dynamicCall("InsertAfter(Text)", "Группа");
+            pCellRange->dynamicCall("InsertAfter(Text)", "ГРУППА");
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 5, 2);
             pCellRange = pCell->querySubObject("Range()");
-            pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(table_counter).group);
+            pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(row).group);
 
             table_row += 6;
 
             for (int i = 0; i < m_answerInfo.count(); i++) {
-
-                if (m_dbTable.at(table_counter).id == m_answerInfo.at(i).id) {
-                    pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + i, 1);
+                if (m_dbTable.at(row).id == m_answerInfo.at(i).id) {
+                    pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row, 1);
                     pCellRange = pCell->querySubObject("Range()");
-                    pCellRange->dynamicCall("InsertAfter(Text)", "Содержание тест вопроса/утверждения");
+                    pCellRange->dynamicCall("InsertAfter(Text)", "ВОПРОС");
 
-                    pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + i, 2);
+                    pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row, 2);
                     pCellRange = pCell->querySubObject("Range()");
                     pCellRange->dynamicCall("InsertAfter(Text)", m_answerInfo.at(i).statement);
 
-                    pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + i + 1, 1);
+                    pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 1, 1);
                     pCellRange = pCell->querySubObject("Range()");
-                    pCellRange->dynamicCall("InsertAfter(Text)", "Выбранный вариант");
+                    pCellRange->dynamicCall("InsertAfter(Text)", "ВЫБРАННЫЙ ВАРИАНТ");
 
-                    pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + i + 1, 2);
+                    pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 1, 2);
                     pCellRange = pCell->querySubObject("Range()");
                     pCellRange->dynamicCall("InsertAfter(Text)", m_answerInfo.at(i).chosenAnswer);
 
-                    pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + i + 2, 1);
+                    pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 2, 1);
                     pCellRange = pCell->querySubObject("Range()");
-                    pCellRange->dynamicCall("InsertAfter(Text)", "Правильность выбранного варианта");
+                    pCellRange->dynamicCall("InsertAfter(Text)", "ВЕРНЫЙ ВАРИАНТ");
 
-                    pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + i + 2, 2);
+                    pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 2, 2);
                     pCellRange = pCell->querySubObject("Range()");
 
                     if (m_answerInfo.at(i).isCorrectAnswer  == 1) {
@@ -340,26 +328,35 @@ void SavingSettingsTabView::saveToDocFile()
                         pCellRange->dynamicCall("InsertAfter(Text)", "Неверный ответ");
                     }
 
-                    if (m_answerInfo.at(i).assurance == -1)
-                        continue;
-
-                    pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + i + 3, 1);
+                    pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 3, 1);
                     pCellRange = pCell->querySubObject("Range()");
-                    pCellRange->dynamicCall("InsertAfter(Text)", "Уверенность");
+                    pCellRange->dynamicCall("InsertAfter(Text)", "УВЕРЕННОСТЬ");
 
-                    pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + i + 3, 2);
+                    pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 3, 2);
                     pCellRange = pCell->querySubObject("Range()");
 
-                    if (m_answerInfo.at(i).assurance) {
+                    if (m_answerInfo.at(i).assurance > 0) {
                         pCellRange->dynamicCall("InsertAfter(Text)", "Уверен");
-                    } else {
+                    } else if (m_answerInfo.at(i).assurance == 0) {
                         pCellRange->dynamicCall("InsertAfter(Text)", "Не уверен");
+                    } else if (m_answerInfo.at(i).assurance == -1) {
+                        pCellRange->dynamicCall("InsertAfter(Text)", "Не используется");
                     }
 
-                    table_row += 3;
+                    table_row += 4;
                 }
-
             }
+
+            //empty line
+            pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row, 1);
+            pCellRange = pCell->querySubObject("Range()");
+            pCellRange->dynamicCall("InsertAfter(Text)", "");
+
+            pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row, 2);
+            pCellRange = pCell->querySubObject("Range()");
+            pCellRange->dynamicCall("InsertAfter(Text)", "");
+            //empty line
+            table_row++;
         }
     } else {
         QMessageBox::warning(0, "Warning", "В выбранной Вами базе нет данных.");
