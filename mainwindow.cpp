@@ -247,6 +247,10 @@ void MainWindow::calculateRresult()
         }
     }
 
+    // case if incorrect answers and not sure
+    if (score < 0)
+        score = 0;
+
     m_studentResult.testName = m_testList.testName;
     m_studentResult.score = score;
 

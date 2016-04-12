@@ -92,7 +92,10 @@ void SavingSettingsTabView::back()
 void SavingSettingsTabView::chooseResultDBPathSlot()
 {
     QString filePath = QFileDialog::getExistingDirectory(this, tr("Choose Test Directory"), "");
-    m_savingPath->setText(filePath + slash);
+    if (filePath.indexOf("/") == filePath.count() - 1)
+        m_savingPath->setText(filePath);
+    else
+        m_savingPath->setText(filePath + slash);
     setDbName(m_savingPath->text() + m_resDbName->text());
 }
 
@@ -221,6 +224,11 @@ void SavingSettingsTabView::saveToDocFile()
 
         QString file = createDocFile();
 
+        if (file.isEmpty()) {
+            QMessageBox::warning(0, "Warning", "Вы не выбрали файл для выгрузки документа.");
+            return;
+        }
+
         m_wordApp = new QAxObject("Word.Application",this);
         m_wordDoc = m_wordApp->querySubObject("Documents()");
         m_wordDoc->dynamicCall("Open(QVariant, QVariant, QVariant, QVariant, QVariant, QVariant, QVariant)", file, false, false, false, "", "", false);  //querySubObject("Add()");
@@ -237,63 +245,92 @@ void SavingSettingsTabView::saveToDocFile()
         int commonRowCount = (m_dbTable.count())*7 + (m_answerInfo.count())*4;
         QAxObject* pNewTable = pTables->querySubObject("Add(Id, testname, firstname, secondName, surname, groupname, scorevalue, maxvalue, testtime)", pSelection->property("Range"), commonRowCount, 2, 1, 1);
 
+        //Resize table width to whole page width.
+        pNewTable->setProperty("PreferredWidthType", "wdPreferredWidthPercent");
+        pNewTable->setProperty("PreferredWidth", 110);
+
+
         //Align table to center.
         pNewTable->querySubObject("Rows()")->setProperty("Alignment", "wdAlignRowCenter");
 
         //Iterate found records.
-        QAxObject *pCell = NULL, *pCellRange = NULL;
+        QAxObject *pCell = NULL, *pCellRange = NULL, *textFont = NULL;
         int table_row = 1;
 
         for (int row = 0; row < m_dbTable.count(); row++) {
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row, 1);
             pCellRange = pCell->querySubObject("Range()");
             pCellRange->dynamicCall("InsertAfter(Text)", "НАЗВАНИЕ ТЕСТА");
+            textFont = pCellRange->querySubObject("Font");
+            textFont->setProperty("Bold", true);
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row, 2);
             pCellRange = pCell->querySubObject("Range()");
             pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(row).testName);
+            textFont = pCellRange->querySubObject("Font");
+            textFont->setProperty("Bold", true);
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 1, 1);
             pCellRange = pCell->querySubObject("Range()");
             pCellRange->dynamicCall("InsertAfter(Text)", "ФИО");
+            textFont = pCellRange->querySubObject("Font");
+            textFont->setProperty("Bold", true);
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 1, 2);
             pCellRange = pCell->querySubObject("Range()");
             pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(row).surname
                                     + " " + m_dbTable.at(row).firstName.at(0)
                                     + ". " + m_dbTable.at(row).secondName.at(0) + ".");
+            textFont = pCellRange->querySubObject("Font");
+            textFont->setProperty("Bold", true);
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 2, 1);
             pCellRange = pCell->querySubObject("Range()");
             pCellRange->dynamicCall("InsertAfter(Text)", "ВРЕМЯ");
+            textFont = pCellRange->querySubObject("Font");
+            textFont->setProperty("Bold", true);
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 2, 2);
             pCellRange = pCell->querySubObject("Range()");
             pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(row).time);
+            textFont = pCellRange->querySubObject("Font");
+            textFont->setProperty("Bold", true);
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 3, 1);
             pCellRange = pCell->querySubObject("Range()");
             pCellRange->dynamicCall("InsertAfter(Text)", "ПОЛУЧЕННЫЙ БАЛЛ");
+            textFont = pCellRange->querySubObject("Font");
+            textFont->setProperty("Bold", true);
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 3, 2);
             pCellRange = pCell->querySubObject("Range()");
             pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(row).score);
+            textFont = pCellRange->querySubObject("Font");
+            textFont->setProperty("Bold", true);
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 4, 1);
             pCellRange = pCell->querySubObject("Range()");
             pCellRange->dynamicCall("InsertAfter(Text)", "ВОЗМОЖНЫЙ МАКСИМУМ");
+            textFont = pCellRange->querySubObject("Font");
+            textFont->setProperty("Bold", true);
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 4, 2);
             pCellRange = pCell->querySubObject("Range()");
             pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(row).maxPosibleScore);
+            textFont = pCellRange->querySubObject("Font");
+            textFont->setProperty("Bold", true);
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 5, 1);
             pCellRange = pCell->querySubObject("Range()");
             pCellRange->dynamicCall("InsertAfter(Text)", "ГРУППА");
+            textFont = pCellRange->querySubObject("Font");
+            textFont->setProperty("Bold", true);
 
             pCell = pNewTable->querySubObject("Cell(Row, Column)", table_row + 5, 2);
             pCellRange = pCell->querySubObject("Range()");
             pCellRange->dynamicCall("InsertAfter(Text)", m_dbTable.at(row).group);
+            textFont = pCellRange->querySubObject("Font");
+            textFont->setProperty("Bold", true);
 
             table_row += 6;
 
@@ -369,6 +406,9 @@ QString SavingSettingsTabView::createDocFile()
                                                     "Save File",
                                                     "TEST.doc",
                                                     "Documents (*.doc *.docx)");
+
+    if (filename.isEmpty())
+        return "";
 
     QFile file(filename);
     file.open(QIODevice::WriteOnly);

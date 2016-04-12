@@ -96,7 +96,7 @@ void TestTabView::resize()
 void TestTabView::checkConnectionState()
 {
     if (m_connectionState != 0) {
-        QMessageBox::warning(0, "Warning", "Внимание, Вы не подключены к сети. Вы можете выбрать и пройти тест, но результаты тестирования не будут сохранены.");
+        QMessageBox::warning(0, "Warning", "Внимание, Вы не подключены к сети. Вы можете выбрать и пройти тест, но результаты тестирования не будут сохранены на сервере. Данные сохранятся локально.");
     }
 }
 
@@ -107,6 +107,7 @@ void TestTabView::chooseTestDb()
         QListWidgetItem *item = m_testBox->currentItem();
         if (item) {
             emit chosenTestDB(item->text());
+            qDebug() << "test db " << item->text();
             m_chooseTest->setEnabled(true);
             m_chooseTestBD->setEnabled(false);
         } else {
@@ -189,6 +190,8 @@ void TestTabView::addToChoiceBox(const QString &filepath)
                 m_testBox->insertItem(m_testBox->count(), newItem);
             }
         }
+    } else {
+        QMessageBox::warning(0, "Warning", "Не нашел файлов на сервере. Проверьте наличие файлов на сервере.");
     }
 }
 
