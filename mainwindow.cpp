@@ -229,10 +229,10 @@ void MainWindow::calculateRresult()
     if (m_testList.testType == StatementTest) {
         //calculate real score
         for (int i = 0; i < m_studentResult.answerInfo.count(); i++) {
+            //if correct answer and assurance
             if (m_studentResult.answerInfo.at(i).isCorrectAnswer) {
-                score += m_questionsWeight.at(i);
-//                if (m_studentResult.answerInfo.at(i).assurance)
-//                    score++;
+                if (m_studentResult.answerInfo.at(i).assurance)
+                    score += m_questionsWeight.at(i);
             } else {
                 if (m_studentResult.answerInfo.at(i).assurance)
                     score--;

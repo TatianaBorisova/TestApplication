@@ -188,11 +188,7 @@ void StatementTestView::setImg(QByteArray img)
 
 void StatementTestView::yesVariant()
 {
-    if (m_answer.isCorrectAnswer)
-        m_answer.assurance = 1;
-    else
-        m_answer.assurance = 0;
-
+    m_answer.assurance = 1;
     emit answeredResult(m_answer);
     showEntry();
 }
