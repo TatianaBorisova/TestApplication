@@ -30,9 +30,9 @@ private:
     QLabel      *m_secondNameLabel;
     QLabel      *m_surnameLabel;
     QLabel      *m_groupLabel;
+    QLineEdit   *m_surnameField;
     QLineEdit   *m_nameField;
     QLineEdit   *m_secondField;
-    QLineEdit   *m_surnameField;
     QLineEdit   *m_groupField;
     QLabel      *m_info;
     QPushButton *m_nextButton;

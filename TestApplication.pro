@@ -11,7 +11,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = TestApplication
 TEMPLATE = app
 
-
 SOURCES += main.cpp \
     mainwindow.cpp \
     testfilereader.cpp \
@@ -55,3 +54,6 @@ HEADERS  += \
 
 RESOURCES += \
     resources.qrc
+
+DISTFILES += \
+    resolution.ini

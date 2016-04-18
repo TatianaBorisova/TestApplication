@@ -15,6 +15,7 @@ class ResultView;
 class SettingsView;
 class TcpClient;
 class QuestionTestView;
+class QSettings;
 
 class MainWindow : public QWidget
 {
@@ -41,7 +42,7 @@ private slots:
     void slotFileLoadingError(const QString &errMsg);
 
 private:
-    void setMainWindowSize(TestAppView view);
+    void setMainWindowSize();
     bool setTestData();
     QRect getScreenGeometry() const;
     void hidePreviuosWindows();
@@ -61,6 +62,7 @@ private:
     SettingsView      *m_settingsView;
     TcpClient         *m_client;
     QList<int>         m_questionsWeight;
+    QSettings         *m_screenSettings;
 };
 
 #endif // MAINWINDOW_H

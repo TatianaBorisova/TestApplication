@@ -18,6 +18,7 @@
 #include <QThread>
 #include <QMessageBox>
 #include <QIcon>
+#include <QSettings>
 
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent),
@@ -29,10 +30,11 @@ MainWindow::MainWindow(QWidget *parent) :
     m_questionTestView(new QuestionTestView(this)),
     m_resultView(new ResultView(this)),
     m_settingsView(new SettingsView(this)),
-    m_client(new TcpClient())
+    m_client(new TcpClient()),
+    m_screenSettings(new QSettings("resolution.ini", QSettings::IniFormat))
 {
     hidePreviuosWindows();
-    setFixedSize(getScreenGeometry().width()*0.98, getScreenGeometry().height()*0.9);
+    setMainWindowSize();
     move(0, 0);
 
     m_statementTestView->setFixedSize(width(), height());
@@ -74,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent) :
 void MainWindow::showTestView(TestAppView view)
 {
     hidePreviuosWindows();
-    setMainWindowSize(view);
+    setMainWindowSize();
 
     switch(view) {
     case TestStartView:
@@ -126,24 +128,28 @@ void MainWindow::slotFileLoadingError(const QString &errMsg)
     QMessageBox::warning(0, "Error", errMsg);
 }
 
-void MainWindow::setMainWindowSize(TestAppView view)
+void MainWindow::setMainWindowSize()
 {
     int mainW = 0;
     int mainH = 0;
+    int x = 0;
+    int y = 0;
 
-    switch(view) {
-    case TestStartView:
-    case TestWayView:
-    case TestStudentInfoView:
-    case TestStatementEntryView:
-    case TestQuestionEntryView:
-    case TestResultView:
-    default:
+    m_screenSettings->beginGroup("mainscreen");
+    mainW = m_screenSettings->value("width").toInt();
+    mainH = m_screenSettings->value("height").toInt();
+    x = m_screenSettings->value("x_coord").toInt();
+    y = m_screenSettings->value("y_coord").toInt();
+    m_screenSettings->endGroup();
+
+    //if screen values are not set - get default system values
+    if (mainW == 0 || mainH == 0) {
         mainW = getScreenGeometry().width()*0.98;
         mainH = getScreenGeometry().height()*0.9;
-        break;
+        this->setGeometry(getScreenGeometry().width()*0.01, getScreenGeometry().height()*0.05, mainW, mainH);
+    } else {
+        this->setGeometry(x, y, mainW, mainH);
     }
-    setFixedSize(mainW, mainH);
 }
 
 bool MainWindow::setTestData()
@@ -259,7 +265,7 @@ void MainWindow::calculateRresult()
     if (m_testList.testType == StatementTest) {
         for (int i = 0; i < m_studentResult.answerInfo.count(); i++) {
             m_studentResult.maxPosibleScore += m_questionsWeight.at(i);
-           // m_studentResult.maxPosibleScore++;
+            // m_studentResult.maxPosibleScore++;
         }
     } else {
         for (int i = 0; i < m_studentResult.answerInfo.count(); i++) {

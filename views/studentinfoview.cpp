@@ -18,9 +18,9 @@ StudentInfoView::StudentInfoView(QWidget *parent) :
     m_secondNameLabel(new QLabel(this)),
     m_surnameLabel(new QLabel(this)),
     m_groupLabel(new QLabel(this)),
+    m_surnameField(new QLineEdit(this)),
     m_nameField(new QLineEdit(this)),
     m_secondField(new QLineEdit(this)),
-    m_surnameField(new QLineEdit(this)),
     m_groupField(new QLineEdit(this)),
     m_info(new QLabel(this)),
     m_nextButton(new QPushButton(this))

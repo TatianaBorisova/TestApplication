@@ -10,7 +10,8 @@ QString StringEncryption::stringEncrypt(const QString &strInput,
                                         const QString &strPassword)
 {
     int i,j;
-    QString strOutput="";
+    if (strInput.isEmpty())
+        return "";
 
     // Перевод строк в битовые массивы с использованием локальных таблиц
     QByteArray baInput    = strInput.toLocal8Bit();
@@ -24,13 +25,10 @@ QString StringEncryption::stringEncrypt(const QString &strInput,
             // XOR - кодировка символа
             baInput[i] = baInput[i] ^ (baPassword[j] + (i*j));
         }
-
-        //Преобразование числа в шестнадцатеричную систему
-        strOutput += QString("%1").arg((int)((unsigned char)baInput[i]),2,16,QChar('0'));
     }
 
     //Возврат кодированной строки
-    return strOutput;
+    return  QString::fromLocal8Bit(baInput.data());
 }
 
 
@@ -41,7 +39,7 @@ QString StringEncryption::stringDecrypt(const QString &strInput,
     int i,j;
 
     // Декодировка строки из 16-ричной системы в битовый массив
-    QByteArray baInput    = QByteArray::fromHex(strInput.toLocal8Bit());
+    QByteArray baInput    = strInput.toLocal8Bit();
     // Перевод строки пароля в битовый массив
     QByteArray baPassword = strPassword.toLocal8Bit();
 
