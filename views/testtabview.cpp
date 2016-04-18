@@ -113,6 +113,8 @@ void TestTabView::chooseTestDb()
         } else {
             QMessageBox::warning(0, "Error", "Выберите файл базы данных из списка.");
         }
+    } else {
+        QMessageBox::warning(0, "Error", "Выберите путь к папке с тестами, либо скачайте тесты с сервера.");
     }
 }
 
@@ -191,7 +193,7 @@ void TestTabView::addToChoiceBox(const QString &filepath)
             }
         }
     } else {
-        QMessageBox::warning(0, "Warning", "Не нашел файлов на сервере. Проверьте наличие файлов на сервере.");
+        QMessageBox::warning(0, "Warning", "Путь к тестовым данным не выбран.");
     }
 }
 

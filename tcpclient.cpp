@@ -193,7 +193,7 @@ void TcpClient::slotReadyRead()
 {
     while(m_pTcpSocket->bytesAvailable())
     {
-        if (m_pTcpSocket->bytesAvailable() >= headerMsgSize) {
+        if (m_pTcpSocket->bytesAvailable() > headerMsgSize) {
 
             QByteArray buffer = m_pTcpSocket->read(headerMsgSize);
             QByteArray newarray;
@@ -232,6 +232,9 @@ void TcpClient::slotReadyRead()
             } else {
                 processFileList(fullMsg);
             }
+        } else {
+            emit fileLoadingError("Сервер не содержит запрашиваемых файлов. Обратитесь за помощью скачивания файлов к преподавателю.");
+            return;
         }
     }
 }
