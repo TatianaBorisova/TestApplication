@@ -112,10 +112,9 @@ void SavingSettingsTabView::setFixedSize(int w, int h)
 
 void SavingSettingsTabView::resize()
 {
-    m_table->setFixedSize(width()*0.8, height()*0.5);
-
     m_savingPath->setFixedWidth(width()*0.5);
     m_resDbName->setFixedWidth(width()*0.3);
+    m_table->setFixedSize(width() - 350, height()*0.5);
 
     //make table full screen
     for (int i = 0; i < m_model->columnCount(); i++) {
