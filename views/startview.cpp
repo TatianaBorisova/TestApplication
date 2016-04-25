@@ -38,6 +38,11 @@ void StartView::resize()
     if (wParent)
         setFixedSize(wParent->width(), wParent->height());
 
+    int btnSize = width()*0.2;
+
+    m_test->setIconSize(QSize(btnSize, btnSize));
+    m_settings->setIconSize(QSize(btnSize, btnSize));
+
     m_hbox->setAlignment(m_test, Qt::AlignHCenter);
     m_hbox->setAlignment(m_settings, Qt::AlignHCenter);
 }

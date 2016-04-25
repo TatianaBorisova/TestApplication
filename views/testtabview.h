@@ -13,7 +13,6 @@ class TestTabView : public TestBaseView
     Q_OBJECT
 public:
     explicit TestTabView(QWidget *parent = 0);
-    void setFixedSize(int w, int h);
 
 signals:
     void chosenTestDB(const QString &fileName);

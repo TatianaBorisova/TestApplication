@@ -30,9 +30,6 @@ MainTestView::MainTestView(QWidget *parent) :
 
 void MainTestView::resize()
 {
-    QWidget *wParent = dynamic_cast<QWidget *>(parent());
-    if (wParent)
-        setFixedSize(wParent->width(), wParent->height());
-
+    setFixedSize(width(), height());
     m_testPage->setFixedSize(width()*0.9, height()*0.9);
 }

@@ -70,14 +70,10 @@ StatementTestView::StatementTestView(QWidget *parent) :
     setLayout(m_mainBox);
 }
 
-void StatementTestView::setFixedSize(int w, int h)
-{
-    QWidget::setFixedSize(w, h);
-    resize();
-}
-
 void StatementTestView::resize()
 {
+    m_anssureView->setFixedHeight(height()*0.7);
+    m_anssureView->move((width() - m_anssureView->width())/2, (height() - m_anssureView->height())/2);
     m_questionImg->setFixedSize(height()*0.3, height()*0.3);
     m_questionEntry->setFixedWidth(width()*0.7);
 

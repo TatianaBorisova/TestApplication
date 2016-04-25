@@ -10,3 +10,9 @@ void TestBaseView::show()
     resize();
     QWidget::show();
 }
+
+void TestBaseView::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+    resize();
+}

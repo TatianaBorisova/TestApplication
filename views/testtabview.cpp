@@ -74,19 +74,9 @@ void TestTabView::getTestsFromServer()
     emit tryGetTestsFromServer();
 }
 
-void TestTabView::setFixedSize(int w, int h)
-{
-    QWidget::setFixedSize(w, h);
-    m_testBox->setFixedSize(width() - btnWidth - 3*minHeight, height()*0.5);
-
-    fillChoiceBox(QDir::currentPath() + "/test/");
-}
-
 void TestTabView::resize()
 {
-    QWidget *wParent = dynamic_cast<QWidget *>(parent());
-    if (wParent)
-        setFixedSize(wParent->width(), wParent->height());
+    setFixedSize(width(), height());
 
     m_testBox->setFixedSize(width() - btnWidth - 3*minHeight, height()*0.5);
 

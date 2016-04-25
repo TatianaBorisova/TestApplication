@@ -20,7 +20,6 @@ public:
     explicit StatementTestView(QWidget *parent = 0);
 
     void setTestData(const TestQuestions &question);
-    void setFixedSize(int w, int h);
 
 signals:
     void answeredResult(const AnswersVector &answer);

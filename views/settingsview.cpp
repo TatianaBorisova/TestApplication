@@ -26,16 +26,11 @@ SettingsView::SettingsView(QWidget *parent) :
     setLayout(vbox);
 }
 
-void SettingsView::setFixedSize(int w, int h)
-{
-    QWidget::setFixedSize(w, h);
-    resize();
-}
-
 void SettingsView::resize()
 {
     m_tab->setFixedSize(width()*0.98, height()*0.95);
     m_saveView->setFixedSize(m_tab->width(), m_tab->height());
+    m_netwotkView->setFixedSize(m_tab->width(), m_tab->height());
 }
 
 void SettingsView::setClientConnectionState(int error)

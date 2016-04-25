@@ -47,9 +47,7 @@ ResultView::ResultView(QWidget *parent) :
 
 void ResultView::resize()
 {
-    QWidget *wParent = dynamic_cast<QWidget *>(parent());
-    if (wParent)
-        setFixedSize(wParent->width(), wParent->height());
+    setFixedSize(width(), height());
 }
 
 void ResultView::finishTestResult(const StudentResult &result)

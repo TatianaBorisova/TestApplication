@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QTcpSocket>
 
+#include "views/testbaseview.h"
 #include "global.h"
 
 class StartView;
@@ -17,7 +18,7 @@ class TcpClient;
 class QuestionTestView;
 class QSettings;
 
-class MainWindow : public QWidget
+class MainWindow : public TestBaseView
 {
     Q_OBJECT
 
@@ -48,6 +49,9 @@ private:
     void hidePreviuosWindows();
     void calculateRresult();
     void creareClientThread();
+
+protected:
+    virtual void resize();
 
 private:
     StartView         *m_startWnd;

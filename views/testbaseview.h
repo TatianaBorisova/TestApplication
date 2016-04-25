@@ -14,6 +14,9 @@ public:
 signals:
     void showView(TestAppView view);
 
+protected:
+    void resizeEvent(QResizeEvent *event);
+
 public slots:
     void show();
 

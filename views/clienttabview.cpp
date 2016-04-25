@@ -48,14 +48,7 @@ ClientTabView::ClientTabView(QWidget *parent) :
 
 void ClientTabView::resize()
 {
-    QWidget *wParent = dynamic_cast<QWidget *>(parent());
-    if (wParent)
-        setFixedSize(wParent->width(), wParent->height());
-}
-
-void ClientTabView::setFixedSize(int w, int h)
-{
-    QWidget::setFixedSize(w, h);
+    setFixedSize(width(), height());
 }
 
 void ClientTabView::setIp(const QString &ip)

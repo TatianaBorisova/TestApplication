@@ -21,7 +21,7 @@
 #include <QSettings>
 
 MainWindow::MainWindow(QWidget *parent) :
-    QWidget(parent),
+    TestBaseView(parent),
     m_startWnd(new StartView(this)),
     m_chooseTest(new MainTestView(this)),
     m_studentData(new StudentInfoView(this)),
@@ -37,15 +37,21 @@ MainWindow::MainWindow(QWidget *parent) :
     setMainWindowSize();
     move(0, 0);
 
+    m_startWnd->setFixedSize(width(), height());
     m_statementTestView->setFixedSize(width(), height());
     m_questionTestView->setFixedSize(width(), height());
+    m_studentData->setFixedSize(width(), height());
+    m_chooseTest->setFixedSize(width(), height());
+    m_statementTestView->setFixedSize(width(), height());
+    m_questionTestView->setFixedSize(width(), height());
+    m_resultView->setFixedSize(width(), height());
+    m_settingsView->setFixedSize(width(), height());
 
     this->setStyleSheet("font-family: Arial; font-style: normal; font-size: 15pt;");
 
     m_settingsView->setClientConnectionState(m_client->getErrorState());
     m_settingsView->setIp(m_client->getServerIp());
     m_settingsView->setPort(m_client->getServerPort());
-    m_settingsView->setFixedSize(width(), height());
 
     QIcon icon(":res/test.png");
     setWindowIcon(icon);
@@ -76,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
 void MainWindow::showTestView(TestAppView view)
 {
     hidePreviuosWindows();
-    setMainWindowSize();
+   // setMainWindowSize();
 
     switch(view) {
     case TestStartView:
@@ -322,4 +328,17 @@ void MainWindow::addAnswerToStudentInfoVector(const AnswersVector &answer)
 void MainWindow::startServerSearch()
 {
     emit m_settingsView->startConnection(zeroHost, m_client->getServerPort());
+}
+
+void MainWindow::resize()
+{
+    m_startWnd->setFixedSize(width(), height());
+    m_statementTestView->setFixedSize(width(), height());
+    m_questionTestView->setFixedSize(width(), height());
+    m_studentData->setFixedSize(width(), height());
+    m_chooseTest->setFixedSize(width(), height());
+    m_statementTestView->setFixedSize(width(), height());
+    m_questionTestView->setFixedSize(width(), height());
+    m_resultView->setFixedSize(width(), height());
+    m_settingsView->setFixedSize(width(), height());
 }

@@ -14,8 +14,6 @@ class ClientTabView : public TestBaseView
 public:
     explicit ClientTabView(QWidget *parent = 0);
 
-    void setFixedSize(int w, int h);
-
 signals:
     void startConnection(const QString &ip, int port);
     void refuseConnection();
