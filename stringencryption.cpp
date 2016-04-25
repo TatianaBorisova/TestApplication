@@ -6,53 +6,31 @@ StringEncryption::StringEncryption(QObject *parent) :
 
 }
 
-QString StringEncryption::stringEncrypt(const QString &strInput,
-                                        const QString &strPassword)
+QString StringEncryption::stringEncrypt(const QString &strInput)
 {
-    int i,j;
     if (strInput.isEmpty())
         return "";
 
-    // Перевод строк в битовые массивы с использованием локальных таблиц
-    QByteArray baInput    = strInput.toLocal8Bit();
-    QByteArray baPassword = strPassword.toLocal8Bit();
-
+    QString array;
     // Кодирование информации
-    for (i=0; i < baInput.size(); i++)
-    {
-        for (j=0; j < baPassword.size(); j++)
-        {
-            // XOR - кодировка символа
-            baInput[i] = baInput[i] ^ (baPassword[j] + (i*j));
-        }
-    }
+    for (int i = 0; i < strInput.length(); i++)
+        array.append(QChar(strInput.at(i).unicode() + 1));
 
     //Возврат кодированной строки
-    return  QString::fromLocal8Bit(baInput.data());
+    return array;
 }
 
-
 // Декодирование строки
-QString StringEncryption::stringDecrypt(const QString &strInput,
-                                        const QString &strPassword)
+QString StringEncryption::stringDecrypt(const QString &strInput)
 {
-    int i,j;
+    if (strInput.isEmpty())
+        return "";
 
-    // Декодировка строки из 16-ричной системы в битовый массив
-    QByteArray baInput    = strInput.toLocal8Bit();
-    // Перевод строки пароля в битовый массив
-    QByteArray baPassword = strPassword.toLocal8Bit();
-
-    // Декодирование информации
-    for (i=0; i < baInput.size(); i++)
-    {
-        for (j=0; j < baPassword.size(); j++)
-        {
-            // XOR - кодировка символа
-            baInput[i] = baInput[i] ^ (baPassword[j] + (i*j));
-        }
-    }
+    QString array;
+    // Кодирование информации
+    for (int i = 0; i < strInput.length(); i++)
+        array.append(QChar(strInput.at(i).unicode() - 1));
 
     //Возврат кодированной строки
-    return QString::fromLocal8Bit(baInput.data());
+    return array;
 }

@@ -9,8 +9,8 @@ class StringEncryption : public QObject
 public:
     explicit StringEncryption(QObject *parent = 0);
 
-    static QString stringDecrypt(const QString &strInput, const QString &strPassword);
-    static QString stringEncrypt(const QString &strInput, const QString &strPassword);
+    static QString stringDecrypt(const QString &strInput);
+    static QString stringEncrypt(const QString &strInput);
 };
 
 #endif // STRINGENCRYPTION_H
