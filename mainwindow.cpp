@@ -82,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
 void MainWindow::showTestView(TestAppView view)
 {
     hidePreviuosWindows();
-   // setMainWindowSize();
+    // setMainWindowSize();
 
     switch(view) {
     case TestStartView:
@@ -117,7 +117,7 @@ void MainWindow::showTestView(TestAppView view)
 
 void MainWindow::slotError(QAbstractSocket::SocketError err, const QString &errorStr)
 {
-    QString strError = "Error: " + (err == QAbstractSocket::HostNotFoundError
+    QString strError = "Ошибка: " + (err == QAbstractSocket::HostNotFoundError
                                     ? "Сервер не найден."
                                     : err == QAbstractSocket::RemoteHostClosedError
                                       ? "Соединение с сервером закрыто."
@@ -126,12 +126,12 @@ void MainWindow::slotError(QAbstractSocket::SocketError err, const QString &erro
                                         : errorStr);
 
 
-    QMessageBox::warning(0, "Error", strError);
+    QMessageBox::warning(0, "Ошибка", strError);
 }
 
 void MainWindow::slotFileLoadingError(const QString &errMsg)
 {
-    QMessageBox::warning(0, "Error", errMsg);
+    QMessageBox::warning(0, "Ошибка", errMsg);
 }
 
 void MainWindow::setMainWindowSize()
@@ -156,6 +156,8 @@ void MainWindow::setMainWindowSize()
     } else {
         this->setGeometry(x, y, mainW, mainH);
     }
+
+    setMinimumSize(width()/2, height()/2);
 }
 
 bool MainWindow::setTestData()

@@ -67,7 +67,7 @@ void TestTabView::back()
 void TestTabView::getTestsFromServer()
 {
     if (m_connectionState != 0) {
-        QMessageBox::warning(0, "Warning", "Ошибка скачивания. Для того, чтобы скачать файлы подключитесь к серверу.");
+        QMessageBox::warning(0, "Внимание", "Ошибка скачивания. Для того, чтобы скачать файлы подключитесь к серверу.");
         return;
     }
 
@@ -86,7 +86,7 @@ void TestTabView::resize()
 void TestTabView::checkConnectionState()
 {
     if (m_connectionState != 0) {
-        QMessageBox::warning(0, "Warning", "Внимание, Вы не подключены к сети. Вы можете выбрать и пройти тест, но результаты тестирования не будут сохранены на сервере. Данные сохранятся локально.");
+        QMessageBox::warning(0, "Внимание", "Внимание, Вы не подключены к сети. Вы можете выбрать и пройти тест, но результаты тестирования не будут сохранены на сервере. Данные сохранятся локально.");
     }
 }
 
@@ -101,10 +101,10 @@ void TestTabView::chooseTestDb()
             m_chooseTest->setEnabled(true);
             m_chooseTestBD->setEnabled(false);
         } else {
-            QMessageBox::warning(0, "Error", "Выберите файл базы данных из списка.");
+            QMessageBox::warning(0, "Ошибка", "Выберите файл базы данных из списка.");
         }
     } else {
-        QMessageBox::warning(0, "Error", "Выберите путь к папке с тестами, либо скачайте тесты с сервера.");
+        QMessageBox::warning(0, "Ошибка", "Выберите путь к папке с тестами, либо скачайте тесты с сервера.");
     }
 }
 
@@ -128,7 +128,7 @@ void TestTabView::chooseTest()
             m_chooseTest->setEnabled(false);
             m_chooseTestBD->setEnabled(true);
         } else {
-            QMessageBox::warning(0, "Error", "Выберите тест из списка.");
+            QMessageBox::warning(0, "Ошибка", "Выберите тест из списка.");
         }
     }
 }
@@ -183,7 +183,7 @@ void TestTabView::addToChoiceBox(const QString &filepath)
             }
         }
     } else {
-        QMessageBox::warning(0, "Warning", "Путь к тестовым данным не выбран.");
+        QMessageBox::warning(0, "Внимание", "Путь к тестовым данным не выбран.");
     }
 }
 

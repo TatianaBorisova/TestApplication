@@ -27,7 +27,7 @@ void TestFileReader::readTestFile(const QString &fileName)
     if (!fileName.isEmpty()) {
         QFile file(fileName);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QMessageBox::warning(0, "Error", "Can't open file: " + fileName);
+            QMessageBox::warning(0, "Ошибка", "Can't open file: " + fileName);
             return;
         }
 
@@ -38,7 +38,7 @@ void TestFileReader::readTestFile(const QString &fileName)
         QJsonDocument doc = QJsonDocument::fromJson(fileEntry.toUtf8(), &error);
 
         if (doc.isEmpty()) {
-            QMessageBox::warning(0, "Error", "Не могу прочесть данные из файла:\n" + fileName);
+            QMessageBox::warning(0, "Ошибка", "Не могу прочесть данные из файла:\n" + fileName);
             return;
         }
 
@@ -62,7 +62,7 @@ void TestFileReader::readTestFile(const QString &fileName)
         if (testData.count() > 0)
             emit readInfo(testData);
         else
-            QMessageBox::warning(0, "Error", QString("Блоки данных в файле %1 пусты.\n").arg(fileName));
+            QMessageBox::warning(0, "Ошибка", QString("Блоки данных в файле %1 пусты.\n").arg(fileName));
     }
 }
 
@@ -71,7 +71,7 @@ void TestFileReader::readAllTestsFromDb(const QString &fileName)
     QSqlDatabase dbPtr = QSqlDatabase::addDatabase("QSQLITE");
     dbPtr.setDatabaseName(fileName);
     if (!dbPtr.open()) {
-        QMessageBox::critical(0, "Can not open database", "Не могу открыть базу данных.\n");
+        QMessageBox::critical(0, "Ошибка", "Не могу открыть базу данных.\n");
         emit dbError();
         return;
     }
@@ -96,7 +96,7 @@ void TestFileReader::readAllTestsFromDb(const QString &fileName)
     }
 
     if (list.count() <= 0) {
-        QMessageBox::warning(0, "Warning", "База данных не содерждит никакой тестовой информации.");
+        QMessageBox::warning(0, "Внимание", "База данных не содерждит никакой тестовой информации.");
         emit dbError();
     } else {
         emit readTests(list);
@@ -110,7 +110,7 @@ void TestFileReader::readTestFromDb(const QString &testName)
     QSqlDatabase dbPtr = QSqlDatabase::addDatabase("QSQLITE");
     dbPtr.setDatabaseName(m_Db);
     if (!dbPtr.open()) {
-        QMessageBox::critical(0, "Can not open database", "Не могу открыть базу данных.\n");
+        QMessageBox::critical(0, "Ошибка", "Не могу открыть базу данных.\n");
         emit dbError();
         return;
     }

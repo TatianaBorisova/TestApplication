@@ -224,7 +224,7 @@ void SavingSettingsTabView::saveToDocFile()
         QString file = createDocFile();
 
         if (file.isEmpty()) {
-            QMessageBox::warning(0, "Warning", "Вы не выбрали файл для выгрузки документа.");
+            QMessageBox::warning(0, "Внимание", "Вы не выбрали файл для выгрузки документа.");
             return;
         }
 
@@ -395,7 +395,7 @@ void SavingSettingsTabView::saveToDocFile()
             table_row++;
         }
     } else {
-        QMessageBox::warning(0, "Warning", "В выбранной Вами базе нет данных.");
+        QMessageBox::warning(0, "Внимание", "В выбранной Вами базе нет данных.");
     }
 }
 

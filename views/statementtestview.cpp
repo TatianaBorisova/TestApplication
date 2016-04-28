@@ -141,7 +141,7 @@ void StatementTestView::setAnsweredState()
         }
     }
     if (!isChecked) {
-        QMessageBox::warning(0, "Error", "Пожалуйста, выберите вариант ответа.");
+        QMessageBox::warning(0, "Ошибка", "Пожалуйста, выберите вариант ответа.");
         return;
     } else {
         hideEntry();
@@ -206,7 +206,7 @@ void StatementTestView::createRadioBtnList(const QStringList &list)
     clearRadioBtnList();
 
     if (list.count() <= 0) {
-        QMessageBox::warning(0, "Error", "Ошибка тестирования.\nНе найдено вариантов ответов.");
+        QMessageBox::warning(0, "Ошибка", "Ошибка тестирования.\nНе найдено вариантов ответов.");
         return;
     }
 
